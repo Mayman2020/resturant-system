@@ -1,0 +1,28 @@
+<div class="qr-menu">
+  <header class="hero">
+    <h1>{{ 'QR.TITLE' | translate }}</h1>
+    <p>{{ 'QR.BROWSE' | translate }}</p>
+    <p *ngIf="menu?.tableNumber">{{ 'QR.TABLE' | translate }}: {{ menu?.tableNumber }}</p>
+  </header>
+
+  <p *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</p>
+  <p *ngIf="error && !loading">{{ 'COMMON.NO_DATA' | translate }}</p>
+
+  <ng-container *ngIf="menu && !loading">
+    <nav class="categories">
+      <button *ngFor="let c of menu.categories"
+        [class.active]="c.id === selectedCategoryId"
+        (click)="selectCategory(c)">
+        {{ c | localizedName }}
+      </button>
+    </nav>
+
+    <section class="items">
+      <article class="item-card" *ngFor="let item of itemsForCategory(selectedCategoryId)">
+        <h3>{{ item | localizedName }}</h3>
+        <span class="price">{{ item.price | number:'1.2-2' }}</span>
+      </article>
+      <p *ngIf="!itemsForCategory(selectedCategoryId).length" class="empty">{{ 'COMMON.NO_DATA' | translate }}</p>
+    </section>
+  </ng-container>
+</div>

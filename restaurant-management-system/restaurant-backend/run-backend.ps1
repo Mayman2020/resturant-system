@@ -1,0 +1,267 @@
+﻿[CmdletBinding()]
+param(
+    [string]$Profile = "",
+    [switch]$SkipBuild,
+    [int]$Port = 0
+)
+
+$ErrorActionPreference = 'Stop'
+$DefaultPort = 8082
+$PreferredDevPort = 8082
+$PortRangeEnd = 8090
+$ExpectedProcess = "java"
+$ContextPath = "/api/v1"
+
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$ProjectRoot = $ScriptDir
+$MvnwPath = Join-Path $ProjectRoot "mvnw.cmd"
+$SecretsFile = Join-Path $ProjectRoot "run-backend.secrets.ps1"
+$WorkspaceRoot = Split-Path -Parent $ProjectRoot
+$RuntimeDir = Join-Path $WorkspaceRoot ".runtime"
+$RuntimeStateFile = Join-Path $RuntimeDir "launcher-state.json"
+$FrontendRuntimeConfigJs = Join-Path $WorkspaceRoot "restaurant-frontend\src\assets\runtime-config.js"
+
+function Write-Step {
+    param([string]$Message, [string]$Color = "Cyan")
+    $ts = Get-Date -Format "HH:mm:ss"
+    Write-Host "[$ts] " -NoNewline
+    Write-Host $Message -ForegroundColor $Color
+}
+function Write-Success { param([string]$Message) Write-Step $Message "Green" }
+function Write-Warn { param([string]$Message) Write-Step $Message "Yellow" }
+function Write-Err { param([string]$Message) Write-Step $Message "Red" }
+function Write-Info { param([string]$Message) Write-Step $Message "Gray" }
+
+# Optional local secret file, kept outside git.
+if ((-not $env:DB_PASS -or $env:DB_PASS.Trim() -eq "") -and (Test-Path $SecretsFile)) {
+    Write-Info "Loading local secrets: $SecretsFile"
+    . $SecretsFile
+}
+if (-not $env:DB_PASS -or $env:DB_PASS.Trim() -eq "") {
+    Write-Warn "DB_PASS is not set. Using app default chain (DB_PASS/SPRING_DATASOURCE_PASSWORD/DB_PASSWORD), default value is 'admin'."
+    Write-Info "  Tip: create run-backend.secrets.ps1 and set `$env:DB_PASS = 'your-postgres-password'"
+}
+
+function Get-ProcessOnPort {
+    param([int]$Port)
+    try {
+        $conn = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+        if ($conn) {
+            $proc = Get-Process -Id $conn.OwningProcess -ErrorAction SilentlyContinue
+            return @{ Process = $proc; Connection = $conn }
+        }
+    } catch { }
+    try {
+        $line = netstat -ano 2>$null | Select-String ":\$Port\s+.*LISTENING" | Select-Object -First 1
+        if ($line) {
+            $parts = ($line -split '\s+')
+            $pidVal = $parts[-1]
+            if ($pidVal -match '^\d+$') {
+                $proc = Get-Process -Id $pidVal -ErrorAction SilentlyContinue
+                if ($proc) { return @{ Process = $proc } }
+            }
+        }
+    } catch { }
+    return $null
+}
+
+function Stop-ProcessOnPort {
+    param([int]$Port, [string]$ExpectedName)
+    $found = Get-ProcessOnPort -Port $Port
+    if (-not $found) {
+        Write-Info "Port $Port is free."
+        return $true
+    }
+    $proc = $found.Process
+    $pidVal = $proc.Id
+    $procName = $proc.ProcessName
+    $match = $procName -like "*$ExpectedName*"
+    if (-not $match) {
+        Write-Warn "Port $Port is used by $procName (PID $pidVal), not $ExpectedName. Not killing for safety."
+        return $false
+    }
+    Write-Step "Port $Port is used by $procName (PID $pidVal) -> stopping process..." "Yellow"
+    try {
+        Stop-Process -Id $pidVal -Force -ErrorAction Stop
+    } catch {
+        Write-Err "Failed to stop process: $_"
+        return $false
+    }
+    Start-Sleep -Seconds 2
+    if (Get-ProcessOnPort -Port $Port) {
+        Write-Err "Process stopped but port $Port is still in use."
+        return $false
+    }
+    Write-Success "Process stopped successfully."
+    return $true
+}
+
+function Find-FreePort {
+    param([int]$StartPort, [int]$EndPort)
+    foreach ($candidate in $StartPort..$EndPort) {
+        $occupied = Get-ProcessOnPort -Port $candidate
+        if (-not $occupied) {
+            return $candidate
+        }
+    }
+    return $null
+}
+
+$JavaCandidates = @(
+    $env:JAVA_HOME,
+    "D:\Progs\Progs Work\jdk_17_new_java",
+    "C:\Program Files\Java\jdk-17",
+    "C:\Program Files\Eclipse Adoptium\jdk-17*",
+    "C:\Program Files\Microsoft\jdk-17*"
+)
+$ResolvedJavaHome = $null
+foreach ($candidate in $JavaCandidates) {
+    if (-not $candidate) { continue }
+    $path = if ($candidate -match '\*') { (Get-Item $candidate -ErrorAction SilentlyContinue | Select-Object -First 1).FullName } else { $candidate }
+    if ($path -and (Test-Path $path) -and (Test-Path (Join-Path $path "bin\java.exe"))) {
+        $ResolvedJavaHome = $path
+        break
+    }
+}
+if (-not $ResolvedJavaHome) {
+    Write-Err "JAVA_HOME not found. Set JAVA_HOME or install JDK 17."
+    exit 1
+}
+$env:JAVA_HOME = $ResolvedJavaHome
+$env:Path = "$($env:JAVA_HOME)\bin;$env:Path"
+Write-Step "Java configured" "Cyan"
+$prevErr = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+& java -version 2>&1 | ForEach-Object { Write-Info "  $_" }
+$ErrorActionPreference = $prevErr
+
+if (-not (Test-Path $MvnwPath)) {
+    Write-Err "Maven wrapper not found: $MvnwPath"
+    exit 1
+}
+Set-Location $ProjectRoot
+
+$pgPort = 5432
+try {
+    $pgListen = Get-NetTCPConnection -LocalPort $pgPort -State Listen -ErrorAction SilentlyContinue
+    if (-not $pgListen) {
+        Write-Warn "PostgreSQL does not appear to be listening on port $pgPort."
+    }
+} catch { }
+
+function Resolve-BackendPort {
+    param([int]$RequestedPort)
+    if ($RequestedPort -gt 0) {
+        return $RequestedPort
+    }
+    # This machine often has Oracle TNS on 8082; prefer 8082 when 8082 is not Java.
+    $defaultState = Get-ProcessOnPort -Port $DefaultPort
+    if ($defaultState -and ($defaultState.Process.ProcessName -notlike "*$ExpectedProcess*")) {
+        $preferredState = Get-ProcessOnPort -Port $PreferredDevPort
+        if (-not $preferredState) {
+            return $PreferredDevPort
+        }
+        if ($preferredState.Process.ProcessName -like "*$ExpectedProcess*") {
+            return $PreferredDevPort
+        }
+    }
+    return $DefaultPort
+}
+
+function Prepare-PortForBackend {
+    param([int]$Port)
+    $found = Get-ProcessOnPort -Port $Port
+    if (-not $found) {
+        Write-Info "Port $Port is free."
+        return $true
+    }
+    $proc = $found.Process
+    if ($proc.ProcessName -like "*$ExpectedProcess*") {
+        return (Stop-ProcessOnPort -Port $Port -ExpectedName $ExpectedProcess)
+    }
+    Write-Warn "Port $Port is used by $($proc.ProcessName) (PID $($proc.Id)), not $ExpectedProcess."
+    return $false
+}
+
+Write-Step "Resolving backend port..." "Cyan"
+$SelectedPort = Resolve-BackendPort -RequestedPort $Port
+if (-not (Prepare-PortForBackend -Port $SelectedPort)) {
+    $fallbackPort = Find-FreePort -StartPort $PreferredDevPort -EndPort $PortRangeEnd
+    if (-not $fallbackPort) {
+        $fallbackPort = Find-FreePort -StartPort ($DefaultPort + 1) -EndPort $PortRangeEnd
+    }
+    if (-not $fallbackPort) {
+        Write-Err "No free backend port found in range $PreferredDevPort-$PortRangeEnd."
+        exit 1
+    }
+    $SelectedPort = $fallbackPort
+    Write-Warn "Switching backend to port $SelectedPort."
+    if (-not (Prepare-PortForBackend -Port $SelectedPort)) {
+        Write-Err "Could not free port $SelectedPort for the backend."
+        exit 1
+    }
+}
+Write-Success "Using port $SelectedPort"
+
+if (-not $SkipBuild) {
+    Write-Step "Maven compile (tests skipped)..." "Cyan"
+    & $MvnwPath compile -DskipTests
+    if ($LASTEXITCODE -ne 0) {
+        Write-Err "Maven compile FAILED."
+        exit $LASTEXITCODE
+    }
+    Write-Success "Maven compile finished successfully."
+    Write-Info "  Tip: use -SkipBuild to start faster when code did not change."
+} else {
+    Write-Info "Skipping build (-SkipBuild)."
+}
+
+if ($Profile) {
+    $env:SPRING_PROFILES_ACTIVE = $Profile
+    Write-Step "Starting backend (profile: $Profile)..." "Cyan"
+} else {
+    if (Test-Path Env:SPRING_PROFILES_ACTIVE) { Remove-Item Env:SPRING_PROFILES_ACTIVE }
+    Write-Step "Starting backend (default profile)..." "Cyan"
+}
+$BaseUrl = "http://localhost:$SelectedPort$ContextPath"
+Write-Info "  Server: $BaseUrl"
+Write-Info "  DB URL default: jdbc:postgresql://localhost:5432/postgres?currentSchema=restaurant_mgmt"
+Write-Info "  Stop with Ctrl+C"
+Write-Host ""
+
+if (-not (Test-Path $RuntimeDir)) {
+    New-Item -ItemType Directory -Path $RuntimeDir | Out-Null
+}
+$runtimeState = @{
+    backendPort = $SelectedPort
+    backendBaseUrl = $BaseUrl
+    backendFileBaseUrl = "http://localhost:$SelectedPort/api/v1/files"
+    updatedAt = (Get-Date).ToString("o")
+}
+$runtimeState | ConvertTo-Json | Set-Content -Path $RuntimeStateFile -Encoding UTF8
+Write-Info "  Runtime state file: $RuntimeStateFile"
+
+if (Test-Path (Split-Path -Parent $FrontendRuntimeConfigJs)) {
+    $runtimeJsContent = @"
+window.__RMS_API_URL__ = '$BaseUrl';
+window.__RMS_FILE_URL__ = '$BaseUrl/files';
+"@
+    $runtimeJsContent | Set-Content -Path $FrontendRuntimeConfigJs -Encoding UTF8
+    Write-Info "  Frontend runtime config: $FrontendRuntimeConfigJs"
+}
+
+$runArgs = @("spring-boot:run")
+if ($Profile) { $runArgs += "-Dspring-boot.run.profiles=$Profile" }
+$runArgs += "-Dspring-boot.run.arguments=--server.port=$SelectedPort --file.base-url=http://localhost:$SelectedPort"
+
+& $MvnwPath @runArgs
+$exitCode = $LASTEXITCODE
+
+Write-Host ""
+if ($exitCode -eq 0) {
+    Write-Success "Backend stopped normally."
+} else {
+    Write-Err "Backend exited with failure (exit code $exitCode)."
+}
+exit $exitCode
+

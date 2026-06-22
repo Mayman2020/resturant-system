@@ -1,0 +1,37 @@
+<app-page-header titleKey="DASHBOARD.TITLE"></app-page-header>
+<div class="stats-grid" *ngIf="stats">
+  <div class="card stat">
+    <span>{{ 'DASHBOARD.TODAY_SALES' | translate }}</span>
+    <strong>{{ stats.todaySales || 0 | number:'1.0-2' }}</strong>
+  </div>
+  <div class="card stat">
+    <span>{{ 'DASHBOARD.OPEN_ORDERS' | translate }}</span>
+    <strong>{{ stats.activeOrders || 0 }}</strong>
+  </div>
+  <div class="card stat">
+    <span>{{ 'DASHBOARD.TODAY_ORDERS' | translate }}</span>
+    <strong>{{ stats.todayOrders || 0 }}</strong>
+  </div>
+  <div class="card stat">
+    <span>{{ 'DASHBOARD.LOW_STOCK' | translate }}</span>
+    <strong>{{ stats.lowStockItems || 0 }}</strong>
+  </div>
+  <div class="card stat">
+    <span>{{ 'DASHBOARD.CUSTOMERS' | translate }}</span>
+    <strong>{{ stats.totalCustomers || 0 }}</strong>
+  </div>
+  <div class="card stat">
+    <span>{{ 'DASHBOARD.STAFF' | translate }}</span>
+    <strong>{{ stats.staffCount || 0 }}</strong>
+  </div>
+</div>
+<div class="charts-grid">
+  <div class="card chart-wrap">
+    <h3>{{ 'DASHBOARD.SALES_TREND' | translate }}</h3>
+    <canvas baseChart [type]="salesChart.type" [data]="salesChart.data" [options]="salesChart.options" height="120"></canvas>
+  </div>
+  <div class="card chart-wrap">
+    <h3>{{ 'DASHBOARD.OPEN_ORDERS' | translate }}</h3>
+    <canvas baseChart [type]="ordersChart.type" [data]="ordersChart.data" [options]="ordersChart.options" height="120"></canvas>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  min-height: var(--topbar-height);
+}
+
+.spacer { flex: 1; }
+
+.user {
+  color: var(--ink-700);
+  font-size: 0.9rem;
+  margin-inline-start: 8px;
+}
+
+.branch-select {
+  min-width: 140px;
+}
+
+.icon-btn-label {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .branch-select { min-width: 180px; }
+}

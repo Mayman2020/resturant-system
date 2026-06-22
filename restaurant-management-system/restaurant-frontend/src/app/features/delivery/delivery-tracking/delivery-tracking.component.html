@@ -1,0 +1,20 @@
+<app-page-header titleKey="DELIVERY.TITLE"></app-page-header>
+
+<div class="card" *ngIf="!deliveries.length">
+  <p class="app-empty-state">{{ 'DELIVERY.NO_DELIVERIES' | translate }}</p>
+</div>
+
+<div class="card deliveries-grid" *ngIf="deliveries.length">
+  <article class="delivery-card" *ngFor="let d of deliveries">
+    <header>
+      <strong>{{ 'ORDERS.ORDER_NUMBER' | translate }}{{ d.orderId }}</strong>
+      <span class="badge">{{ d.status | enumTranslate:'DELIVERY' }}</span>
+    </header>
+    <p *ngIf="d.deliveryAddress"><span>{{ 'DELIVERY.ADDRESS' | translate }}:</span> {{ d.deliveryAddress }}</p>
+    <p *ngIf="d.deliveryFee != null"><span>{{ 'DELIVERY.FEE' | translate }}:</span> {{ d.deliveryFee }}</p>
+    <p *ngIf="d.estimatedMinutes != null"><span>{{ 'DELIVERY.ETA' | translate }}:</span> {{ d.estimatedMinutes }} {{ 'COMMON.MINUTES' | translate }}</p>
+    <button mat-stroked-button *ngIf="nextStatus(d.status)" (click)="advanceStatus(d)">
+      {{ 'ORDERS.ADVANCE' | translate }}
+    </button>
+  </article>
+</div>

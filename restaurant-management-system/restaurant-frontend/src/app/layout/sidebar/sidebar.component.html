@@ -1,0 +1,23 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <div class="brand">
+    <span class="logo">{{ 'APP.LOGO' | translate }}</span>
+    <span *ngIf="!collapsed">{{ 'APP.TITLE' | translate }}</span>
+  </div>
+  <nav>
+    <ng-container *ngFor="let section of sections">
+      <div class="section-label" *ngIf="!collapsed && section.labelKey">{{ section.labelKey | translate }}</div>
+      <a *ngFor="let item of section.items"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         [matTooltip]="collapsed ? (item.labelKey | translate) : ''"
+         matTooltipPosition="after">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span *ngIf="!collapsed">{{ item.labelKey | translate }}</span>
+      </a>
+    </ng-container>
+  </nav>
+  <button type="button" class="logout" (click)="logout()">
+    <span *ngIf="!collapsed">{{ 'AUTH.LOGOUT' | translate }}</span>
+    <span *ngIf="collapsed">⏻</span>
+  </button>
+</aside>

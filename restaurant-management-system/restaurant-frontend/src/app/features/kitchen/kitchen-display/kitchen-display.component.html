@@ -1,0 +1,51 @@
+<app-page-header titleKey="KITCHEN.TITLE" subtitleKey="KITCHEN.POLLING"></app-page-header>
+
+<div class="kitchen-columns">
+  <section class="column card">
+    <h3>{{ 'KITCHEN.NEW_ORDERS' | translate }}</h3>
+    <p class="empty" *ngIf="!ordersByStatuses(newStatuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
+    <article class="order" *ngFor="let o of ordersByStatuses(newStatuses)">
+      <header>
+        <strong>#{{ o.orderNumber }}</strong>
+        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
+      </header>
+      <p>{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
+      <ul>
+        <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
+      </ul>
+      <button mat-stroked-button color="primary" (click)="advance(o)">{{ 'KITCHEN.ADVANCE' | translate }}</button>
+    </article>
+  </section>
+
+  <section class="column card">
+    <h3>{{ 'KITCHEN.IN_PROGRESS' | translate }}</h3>
+    <p class="empty" *ngIf="!ordersByStatuses(progressStatuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
+    <article class="order" *ngFor="let o of ordersByStatuses(progressStatuses)">
+      <header>
+        <strong>#{{ o.orderNumber }}</strong>
+        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
+      </header>
+      <p>{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
+      <ul>
+        <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
+      </ul>
+      <button mat-stroked-button color="primary" (click)="advance(o)">{{ 'KITCHEN.ADVANCE' | translate }}</button>
+    </article>
+  </section>
+
+  <section class="column card">
+    <h3>{{ 'KITCHEN.READY_TO_SERVE' | translate }}</h3>
+    <p class="empty" *ngIf="!ordersByStatuses(readyStatuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
+    <article class="order" *ngFor="let o of ordersByStatuses(readyStatuses)">
+      <header>
+        <strong>#{{ o.orderNumber }}</strong>
+        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
+      </header>
+      <p>{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
+      <ul>
+        <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
+      </ul>
+      <button mat-stroked-button color="primary" (click)="advance(o)">{{ 'KITCHEN.DONE' | translate }}</button>
+    </article>
+  </section>
+</div>

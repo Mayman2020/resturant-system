@@ -1,0 +1,21 @@
+<app-page-header titleKey="SETTINGS.TITLE"></app-page-header>
+<form class="card settings-form" [formGroup]="form" (ngSubmit)="save()">
+  <h3>{{ 'SETTINGS.GENERAL' | translate }}</h3>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'SETTINGS.RESTAURANT_NAME' | translate }}</mat-label>
+    <input matInput formControlName="restaurantName">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'SETTINGS.TAX_RATE' | translate }}</mat-label>
+    <input matInput type="number" formControlName="taxRate">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'SETTINGS.SERVICE_CHARGE' | translate }}</mat-label>
+    <input matInput type="number" formControlName="serviceCharge">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'SETTINGS.CURRENCY' | translate }}</mat-label>
+    <input matInput formControlName="currency">
+  </mat-form-field>
+  <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
+</form>

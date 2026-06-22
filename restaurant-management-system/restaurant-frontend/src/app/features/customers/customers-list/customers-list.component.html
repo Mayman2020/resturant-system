@@ -1,0 +1,46 @@
+<app-page-header titleKey="CUSTOMERS.TITLE"></app-page-header>
+
+<div class="card">
+  <button mat-flat-button color="primary" (click)="toggleForm()">{{ 'CUSTOMERS.ADD_CUSTOMER' | translate }}</button>
+
+  <form class="customer-form" *ngIf="showForm" [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'COMMON.NAME' | translate }}</mat-label>
+      <input matInput formControlName="fullName">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
+      <input matInput formControlName="phone">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
+      <input matInput formControlName="email">
+    </mat-form-field>
+    <div class="form-actions">
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
+      <button mat-button type="button" (click)="toggleForm()">{{ 'COMMON.CANCEL' | translate }}</button>
+    </div>
+  </form>
+
+  <table class="app-data-table" *ngIf="customers.length; else noCustomers">
+    <thead>
+      <tr>
+        <th>{{ 'COMMON.NAME' | translate }}</th>
+        <th>{{ 'COMMON.PHONE' | translate }}</th>
+        <th>{{ 'COMMON.EMAIL' | translate }}</th>
+        <th>{{ 'CUSTOMERS.LOYALTY_POINTS' | translate }}</th>
+        <th>{{ 'CUSTOMERS.VISITS' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of customers">
+        <td>{{ customerName(c) }}</td>
+        <td>{{ c.phone }}</td>
+        <td>{{ c.email }}</td>
+        <td>{{ c.loyaltyPoints ?? 0 }}</td>
+        <td>{{ c.visits ?? 0 }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noCustomers><p class="app-empty-state">{{ 'CUSTOMERS.NO_CUSTOMERS' | translate }}</p></ng-template>
+</div>

@@ -1,0 +1,25 @@
+<app-page-header titleKey="REPORTS.TITLE"></app-page-header>
+
+<div class="card summary" *ngIf="dailySales">
+  <div class="stat">
+    <span>{{ 'REPORTS.DAILY' | translate }}</span>
+    <strong>{{ dailySales.totalSales || 0 | number:'1.2-2' }}</strong>
+  </div>
+  <div class="stat">
+    <span>{{ 'CHART.ORDERS' | translate }}</span>
+    <strong>{{ dailySales.orderCount || 0 }}</strong>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <div class="card chart">
+    <h3>{{ 'REPORTS.SALES' | translate }}</h3>
+    <canvas baseChart [type]="salesChart.type" [data]="salesChart.data" [options]="salesChart.options" height="120"></canvas>
+  </div>
+  <div class="card chart">
+    <h3>{{ 'REPORTS.TOP_ITEMS' | translate }}</h3>
+    <canvas baseChart [type]="topItemsChart.type" [data]="topItemsChart.data" [options]="topItemsChart.options" height="160"></canvas>
+  </div>
+</div>
+
+<p *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</p>

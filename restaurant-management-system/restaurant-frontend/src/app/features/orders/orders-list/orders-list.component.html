@@ -1,0 +1,22 @@
+<app-page-header titleKey="ORDERS.TITLE"></app-page-header>
+
+<div class="card" *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</div>
+
+<div class="card" *ngIf="!loading && !orders.length">
+  <p class="app-empty-state">{{ 'ORDERS.NO_ORDERS' | translate }}</p>
+</div>
+
+<div class="card orders-table" *ngIf="!loading && orders.length">
+  <div class="row header">
+    <span>{{ 'ORDERS.ORDER_NUMBER' | translate }}</span>
+    <span>{{ 'ORDERS.ORDER_TYPE' | translate }}</span>
+    <span>{{ 'COMMON.STATUS' | translate }}</span>
+    <span>{{ 'COMMON.AMOUNT' | translate }}</span>
+  </div>
+  <a *ngFor="let o of orders" [routerLink]="['/admin/orders', o.id]" class="row">
+    <span>#{{ o.orderNumber }}</span>
+    <span>{{ o.orderType | enumTranslate:'ORDERS' }}</span>
+    <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
+    <span>{{ o.totalAmount | number:'1.2-2' }}</span>
+  </a>
+</div>

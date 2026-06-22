@@ -1,0 +1,39 @@
+export type UserRole = 'ADMIN' | 'MANAGER' | 'CASHIER' | 'WAITER' | 'KITCHEN_STAFF' | 'DELIVERY_DRIVER';
+export type PermissionAction = 'view' | 'create' | 'edit' | 'delete' | 'menu';
+
+export interface ModulePermission {
+  enabled?: boolean;
+  view?: boolean;
+  create?: boolean;
+  edit?: boolean;
+  delete?: boolean;
+  menu?: boolean;
+}
+
+export type PermissionMap = Record<string, ModulePermission>;
+
+export interface UserDto {
+  id: number;
+  username: string;
+  email?: string;
+  fullName?: string;
+  role: UserRole;
+  branchId?: number;
+  permissions?: PermissionMap;
+  mustChangePassword?: boolean;
+}
+
+export interface CurrentUser extends UserDto {
+  initials?: string;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken?: string;
+  user: UserDto;
+}
