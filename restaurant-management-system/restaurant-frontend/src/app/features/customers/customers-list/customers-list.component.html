@@ -1,46 +1,59 @@
-<app-page-header titleKey="CUSTOMERS.TITLE"></app-page-header>
+<div class="app-page">
+  <app-page-header titleKey="CUSTOMERS.TITLE">
+    <rms-icon-btn icon="person_add" tooltipKey="CUSTOMERS.ADD_CUSTOMER" variant="primary" (clicked)="openAddDialog()"></rms-icon-btn>
+    <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
+  </app-page-header>
 
-<div class="card">
-  <button mat-flat-button color="primary" (click)="toggleForm()">{{ 'CUSTOMERS.ADD_CUSTOMER' | translate }}</button>
+  <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
 
-  <form class="customer-form" *ngIf="showForm" [formGroup]="form" (ngSubmit)="save()">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'COMMON.NAME' | translate }}</mat-label>
-      <input matInput formControlName="fullName">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
-      <input matInput formControlName="phone">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
-      <input matInput formControlName="email">
-    </mat-form-field>
-    <div class="form-actions">
-      <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
-      <button mat-button type="button" (click)="toggleForm()">{{ 'COMMON.CANCEL' | translate }}</button>
-    </div>
-  </form>
+  <div class="app-list-surface" *ngIf="!loading">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'CUSTOMERS.TITLE' | translate }}</span>
+        <strong>{{ customers.length }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'CUSTOMERS.LOYALTY_POINTS' | translate }}</span>
+        <strong>{{ totalLoyalty }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'CUSTOMERS.VISITS' | translate }}</span>
+        <strong>{{ totalVisits }}</strong>
+      </article>
+    </section>
 
-  <table class="app-data-table" *ngIf="customers.length; else noCustomers">
-    <thead>
-      <tr>
-        <th>{{ 'COMMON.NAME' | translate }}</th>
-        <th>{{ 'COMMON.PHONE' | translate }}</th>
-        <th>{{ 'COMMON.EMAIL' | translate }}</th>
-        <th>{{ 'CUSTOMERS.LOYALTY_POINTS' | translate }}</th>
-        <th>{{ 'CUSTOMERS.VISITS' | translate }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let c of customers">
-        <td>{{ customerName(c) }}</td>
-        <td>{{ c.phone }}</td>
-        <td>{{ c.email }}</td>
-        <td>{{ c.loyaltyPoints ?? 0 }}</td>
-        <td>{{ c.visits ?? 0 }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <ng-template #noCustomers><p class="app-empty-state">{{ 'CUSTOMERS.NO_CUSTOMERS' | translate }}</p></ng-template>
+    <section class="app-card table-card">
+      <div class="estate-table-toolbar">
+        <label class="estate-search-inline">
+          <span class="material-icons">search</span>
+          <input [(ngModel)]="search" (keyup.enter)="applyFilter()" [placeholder]="'COMMON.SEARCH' | translate">
+        </label>
+      </div>
+
+      <div class="app-table-wrap">
+        <table class="app-data-table" *ngIf="pagedCustomers.length; else noCustomers">
+          <thead>
+            <tr>
+              <th>{{ 'COMMON.NAME' | translate }}</th>
+              <th>{{ 'COMMON.PHONE' | translate }}</th>
+              <th>{{ 'COMMON.EMAIL' | translate }}</th>
+              <th>{{ 'CUSTOMERS.LOYALTY_POINTS' | translate }}</th>
+              <th>{{ 'CUSTOMERS.VISITS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of pagedCustomers">
+              <td>{{ customerName(c) }}</td>
+              <td>{{ c.phone }}</td>
+              <td>{{ c.email }}</td>
+              <td>{{ c.loyaltyPoints ?? 0 }}</td>
+              <td>{{ c.visits ?? 0 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noCustomers><p class="empty-state">{{ 'CUSTOMERS.NO_CUSTOMERS' | translate }}</p></ng-template>
+      <app-table-pager [length]="filtered.length" [pageSize]="size" [pageIndex]="page" (pageIndexChange)="onPageChange($event)"></app-table-pager>
+    </section>
+  </div>
 </div>

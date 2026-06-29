@@ -1,23 +1,36 @@
 <aside class="sidebar" [class.collapsed]="collapsed">
-  <div class="brand">
-    <span class="logo">{{ 'APP.LOGO' | translate }}</span>
-    <span *ngIf="!collapsed">{{ 'APP.TITLE' | translate }}</span>
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <img src="assets/brand/logo-cloche.svg" alt="" class="brand-logo" width="32" height="32">
+    </div>
+    <div class="brand-text" *ngIf="!collapsed">
+      <span class="brand-name">{{ 'APP.BRAND' | translate }}</span>
+      <span class="brand-tagline">{{ 'APP.TAGLINE_SHORT' | translate }}</span>
+    </div>
+    <button class="collapse-btn" type="button" (click)="collapseToggle.emit()">
+      <span class="material-icons">{{ collapsed ? 'chevron_right' : 'chevron_left' }}</span>
+    </button>
   </div>
-  <nav>
-    <ng-container *ngFor="let section of sections">
-      <div class="section-label" *ngIf="!collapsed && section.labelKey">{{ section.labelKey | translate }}</div>
-      <a *ngFor="let item of section.items"
-         [routerLink]="item.route"
-         routerLinkActive="active"
-         [matTooltip]="collapsed ? (item.labelKey | translate) : ''"
-         matTooltipPosition="after">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span *ngIf="!collapsed">{{ item.labelKey | translate }}</span>
-      </a>
-    </ng-container>
+  <nav class="sidebar-nav">
+    <a *ngFor="let item of items; trackBy: trackItem"
+       class="nav-item"
+       [routerLink]="item.route"
+       (click)="onMenuNav()"
+       routerLinkActive="active"
+       [matTooltip]="collapsed ? (item.labelKey | translate) : ''"
+       matTooltipPosition="after">
+      <span class="nav-icon-wrap" [attr.data-tone]="item.tone">
+        <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+      </span>
+      <span class="nav-label" *ngIf="!collapsed">{{ item.labelKey | translate }}</span>
+    </a>
   </nav>
-  <button type="button" class="logout" (click)="logout()">
+  <button type="button" class="sidebar-logout" (click)="logout()"
+          [matTooltip]="collapsed ? ('AUTH.LOGOUT' | translate) : ''"
+          matTooltipPosition="after">
+    <span class="nav-icon-wrap" data-tone="slate">
+      <mat-icon class="nav-icon">logout</mat-icon>
+    </span>
     <span *ngIf="!collapsed">{{ 'AUTH.LOGOUT' | translate }}</span>
-    <span *ngIf="collapsed">⏻</span>
   </button>
 </aside>

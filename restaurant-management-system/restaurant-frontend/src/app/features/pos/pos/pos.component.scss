@@ -1,1 +1,199 @@
-.pos-grid{display:grid;grid-template-columns:220px 1fr 280px;gap:16px}.payment{margin-top:16px}
+.pos-page .app-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pos-page .app-card-title .material-icons {
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.tone-gold { color: var(--gold-light); }
+.tone-orange { color: var(--orange); }
+.tone-cyan { color: var(--cyan); }
+
+.pos-controls-card .estate-table-toolbar {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.pos-table-field {
+  min-width: 200px;
+  margin: 0;
+}
+
+.pos-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pos-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.pos-side-card,
+.pos-products-card,
+.cart-panel {
+  min-height: 420px;
+}
+
+.category-list {
+  display: grid;
+  gap: 8px;
+}
+
+.category-chip {
+  width: 100%;
+  text-align: start;
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-input);
+  color: var(--ink-700);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.category-chip:hover,
+.category-chip.active {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--ink-900);
+  box-shadow: 0 0 16px var(--gold-glow);
+}
+
+.pos-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.pos-product-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: linear-gradient(165deg, var(--bg-card-hover), var(--bg-card));
+  box-shadow: var(--glow-card);
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink-900);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.pos-product-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212, 168, 83, 0.45);
+  box-shadow: var(--glow-card-hover);
+}
+
+.pos-product-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--text-on-accent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.pos-product-icon[data-tone='orange'] { background: linear-gradient(135deg, #ea580c, #fb923c); }
+.pos-product-icon[data-tone='gold'] { background: linear-gradient(135deg, #b8892e, #e8c878); }
+.pos-product-icon[data-tone='cyan'] { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+.pos-product-icon[data-tone='rose'] { background: linear-gradient(135deg, #db2777, #f472b6); }
+.pos-product-icon[data-tone='green'] { background: linear-gradient(135deg, #059669, #34d399); }
+.pos-product-icon[data-tone='indigo'] { background: linear-gradient(135deg, #4338ca, #818cf8); }
+
+.pos-product-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.pos-product-price {
+  font-weight: 700;
+  color: var(--gold-light);
+  font-size: 1rem;
+}
+
+.cart-header {
+  width: 100%;
+}
+
+.cart-line {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-2);
+}
+
+.cart-line-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.line-total {
+  color: var(--gold-light);
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cart-total-box {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(30, 58, 95, 0.35), rgba(212, 168, 83, 0.12));
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.cart-total-box strong {
+  font-size: 1.25rem;
+  color: var(--gold-light);
+}
+
+.payment-card .payment-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+}
+
+.place-order-btn {
+  min-height: 48px !important;
+  padding: 0 24px !important;
+}
+
+.empty {
+  color: var(--ink-500);
+  text-align: center;
+  padding: 24px;
+}
+
+@media (max-width: 1100px) {
+  .pos-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -32,6 +32,7 @@ export const AppConstants = {
 
     USERS: '/users',
     USER_BY_ID: (id: number) => `/users/${id}`,
+    USERS_TOGGLE_ACTIVE: (id: number) => `/users/${id}/toggle-active`,
     USERS_ME: '/users/me',
     USERS_ME_CHANGE_PASSWORD: '/users/me/change-password',
 
@@ -98,6 +99,11 @@ export const AppConstants = {
 
     PERMISSIONS: '/permissions',
     PERMISSIONS_BY_ROLE: (role: string) => `/permissions/${role}`,
+
+    LOOKUPS_BY_TYPE: '/lookups/by-type',
+    LOOKUPS_ADMIN_BY_TYPE: '/lookups/admin/by-type',
+    LOOKUPS: '/lookups',
+    LOOKUP_BY_ID: (id: number) => `/lookups/${id}`,
   },
 } as const;
 

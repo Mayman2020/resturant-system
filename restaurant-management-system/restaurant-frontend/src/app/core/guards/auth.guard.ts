@@ -38,3 +38,11 @@ export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =>
 };
 
 export const adminGuard: CanActivateFn = roleGuard(['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN_STAFF', 'DELIVERY_DRIVER']);
+
+export const mustChangePasswordGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  if (!auth.mustChangePassword()) return true;
+  if (state.url.includes('/admin/profile')) return true;
+  return router.createUrlTree(['/admin/profile'], { queryParams: { changePassword: '1' } });
+};

@@ -1,28 +1,14 @@
-.topbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  min-height: var(--topbar-height);
-}
-
-.spacer { flex: 1; }
-
-.user {
-  color: var(--ink-700);
-  font-size: 0.9rem;
-  margin-inline-start: 8px;
+.user-btn .chevron {
+  font-size: 18px;
+  color: var(--ink-400);
 }
 
 .branch-select {
-  min-width: 140px;
+  max-width: 180px;
 }
 
-.icon-btn-label {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .branch-select { min-width: 180px; }
+@media (min-width: 901px) {
+  .mobile-menu {
+    display: none;
+  }
 }

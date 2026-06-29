@@ -1,0 +1,95 @@
+/* BistroOS motion — page enter, cards, micro-interactions */
+
+@keyframes rms-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rms-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rms-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rms-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes rms-float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(8px, -12px) scale(1.02); }
+  66% { transform: translate(-6px, 6px) scale(0.98); }
+}
+
+@keyframes rms-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes rms-pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 93, 58, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(232, 93, 58, 0); }
+}
+
+@keyframes rms-slide-indicator {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes rms-orb-drift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(30px, -20px); }
+  50% { transform: translate(-15px, 15px); }
+  75% { transform: translate(20px, 10px); }
+}
+
+.rms-animate-in {
+  animation: rms-fade-up 0.55s var(--e-out) both;
+}
+
+.rms-animate-scale {
+  animation: rms-scale-in 0.45s var(--e-out) both;
+}
+
+.page-shell {
+  animation: rms-fade-up 0.5s var(--e-out) both;
+}
+
+.page-shell .estate-stat-card:nth-child(1) { animation: rms-fade-up 0.45s var(--e-out) 0.05s both; }
+.page-shell .estate-stat-card:nth-child(2) { animation: rms-fade-up 0.45s var(--e-out) 0.1s both; }
+.page-shell .estate-stat-card:nth-child(3) { animation: rms-fade-up 0.45s var(--e-out) 0.15s both; }
+.page-shell .estate-stat-card:nth-child(4) { animation: rms-fade-up 0.45s var(--e-out) 0.2s both; }
+.page-shell .estate-stat-card:nth-child(5) { animation: rms-fade-up 0.45s var(--e-out) 0.25s both; }
+.page-shell .estate-stat-card:nth-child(6) { animation: rms-fade-up 0.45s var(--e-out) 0.3s both; }
+
+.page-shell > .estate-card,
+.page-shell > mat-tab-group {
+  animation: rms-fade-up 0.5s var(--e-out) 0.12s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rms-animate-in,
+  .rms-animate-scale,
+  .page-shell,
+  .page-shell .estate-stat-card,
+  .page-shell > .estate-card {
+    animation: none !important;
+  }
+}

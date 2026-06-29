@@ -1,69 +1,116 @@
-<app-page-header titleKey="POS.TITLE"></app-page-header>
+<div class="app-page pos-page">
+  <app-page-header titleKey="POS.TITLE" subtitleKey="POS.SUBTITLE"></app-page-header>
 
-<div class="pos-controls card">
-  <div class="control-group">
-    <span class="label">{{ 'POS.ORDER_TYPE' | translate }}</span>
-    <div class="btn-row">
-      <button mat-stroked-button *ngFor="let t of orderTypes"
-        [class.active]="t === orderType" (click)="orderType = t">
-        {{ 'POS.' + t | translate }}
-      </button>
-    </div>
-  </div>
-  <mat-form-field appearance="outline" *ngIf="orderType === 'DINE_IN'">
-    <mat-label>{{ 'POS.SELECT_TABLE' | translate }}</mat-label>
-    <mat-select [(value)]="selectedTableId">
-      <mat-option *ngFor="let t of tables" [value]="t.id">{{ t.tableNumber }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
+  <div class="app-list-surface">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--gold">
+        <span class="stat-label">{{ 'POS.CART' | translate }}</span>
+        <strong>{{ cart.length }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'COMMON.GRAND_TOTAL' | translate }}</span>
+        <strong>{{ total | number:'1.2-2' }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'POS.PRODUCTS' | translate }}</span>
+        <strong>{{ items.length }}</strong>
+      </article>
+    </section>
 
-<div class="pos-grid">
-  <aside class="card">
-    <h3>{{ 'POS.CATEGORIES' | translate }}</h3>
-    <button mat-stroked-button *ngFor="let c of categories"
-      (click)="selectCategory(c.id)" [class.active]="c.id === selectedCategoryId">
-      {{ c | localizedName }}
-    </button>
-  </aside>
-
-  <section class="card">
-    <h3>{{ 'POS.PRODUCTS' | translate }}</h3>
-    <button class="product" *ngFor="let p of items" (click)="addToCart(p)">
-      {{ p | localizedName }} — {{ p.price | number:'1.2-2' }}
-    </button>
-  </section>
-
-  <aside class="card cart-panel">
-    <div class="cart-header">
-      <h3>{{ 'POS.CART' | translate }}</h3>
-      <button mat-button (click)="clearCart()" [disabled]="!cart.length">{{ 'POS.CLEAR_CART' | translate }}</button>
-    </div>
-    <p class="empty" *ngIf="!cart.length">{{ 'POS.EMPTY_CART' | translate }}</p>
-    <div class="cart-line" *ngFor="let line of cart">
-      <span>{{ line.item | localizedName }}</span>
-      <div class="qty-controls">
-        <button mat-icon-button (click)="decreaseQty(line)" [attr.aria-label]="'POS.DECREASE' | translate">−</button>
-        <span>{{ line.qty }}</span>
-        <button mat-icon-button (click)="increaseQty(line)" [attr.aria-label]="'POS.INCREASE' | translate">+</button>
-        <button mat-button color="warn" (click)="removeFromCart(line)">{{ 'POS.REMOVE' | translate }}</button>
+    <section class="app-card table-card pos-controls-card">
+      <div class="estate-table-toolbar">
+        <div class="control-group">
+          <span class="label">{{ 'POS.ORDER_TYPE' | translate }}</span>
+          <div class="btn-row pos-chip-row">
+            <button type="button" class="estate-filter-btn" *ngFor="let t of orderTypes"
+              [class.active]="t === orderType" (click)="orderType = t">
+              {{ 'POS.' + t | translate }}
+            </button>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="pos-table-field" *ngIf="orderType === 'DINE_IN'">
+          <mat-label>{{ 'POS.SELECT_TABLE' | translate }}</mat-label>
+          <mat-select [(value)]="selectedTableId">
+            <mat-option *ngFor="let t of tables" [value]="t.id">{{ t.tableNumber }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <span class="line-total">{{ line.item.price * line.qty | number:'1.2-2' }}</span>
-    </div>
-    <strong class="total">{{ 'COMMON.GRAND_TOTAL' | translate }}: {{ total | number:'1.2-2' }}</strong>
-  </aside>
-</div>
+    </section>
 
-<footer class="card payment">
-  <span class="label">{{ 'POS.PAYMENT' | translate }}</span>
-  <div class="btn-row">
-    <button mat-stroked-button *ngFor="let m of paymentMethods"
-      [class.active]="m === paymentMethod" (click)="paymentMethod = m">
-      {{ 'POS.' + m | translate }}
-    </button>
+    <div class="pos-grid">
+      <aside class="app-card pos-side-card">
+        <div class="app-card-header">
+          <span class="app-card-title"><span class="material-icons tone-gold">category</span>{{ 'POS.CATEGORIES' | translate }}</span>
+        </div>
+        <div class="app-card-body category-list">
+          <button type="button" class="category-chip" *ngFor="let c of categories"
+            [class.active]="c.id === selectedCategoryId" (click)="selectCategory(c.id)">
+            {{ c | localizedName }}
+          </button>
+        </div>
+      </aside>
+
+      <section class="app-card pos-products-card">
+        <div class="app-card-header">
+          <span class="app-card-title"><span class="material-icons tone-orange">restaurant</span>{{ 'POS.PRODUCTS' | translate }}</span>
+        </div>
+        <div class="app-card-body">
+          <div class="pos-product-grid">
+            <button type="button" class="pos-product-card" *ngFor="let p of items; let i = index" (click)="addToCart(p)">
+              <span class="pos-product-icon" [attr.data-tone]="productTone(i)">
+                <span class="material-icons">lunch_dining</span>
+              </span>
+              <span class="pos-product-name">{{ p | localizedName }}</span>
+              <span class="pos-product-price">{{ p.price | number:'1.2-2' }}</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="app-card cart-panel">
+        <div class="app-card-header cart-header">
+          <span class="app-card-title"><span class="material-icons tone-cyan">shopping_cart</span>{{ 'POS.CART' | translate }}</span>
+          <button mat-button type="button" (click)="clearCart()" [disabled]="!cart.length">{{ 'POS.CLEAR_CART' | translate }}</button>
+        </div>
+        <div class="app-card-body">
+          <p class="empty" *ngIf="!cart.length">{{ 'POS.EMPTY_CART' | translate }}</p>
+          <div class="cart-line" *ngFor="let line of cart">
+            <div class="cart-line-main">
+              <span>{{ line.item | localizedName }}</span>
+              <span class="line-total">{{ line.item.price * line.qty | number:'1.2-2' }}</span>
+            </div>
+            <div class="qty-controls">
+              <button mat-icon-button type="button" (click)="decreaseQty(line)">−</button>
+              <span>{{ line.qty }}</span>
+              <button mat-icon-button type="button" (click)="increaseQty(line)">+</button>
+              <button mat-button color="warn" type="button" (click)="removeFromCart(line)">{{ 'POS.REMOVE' | translate }}</button>
+            </div>
+          </div>
+          <div class="cart-total-box" *ngIf="cart.length">
+            <span>{{ 'COMMON.GRAND_TOTAL' | translate }}</span>
+            <strong>{{ total | number:'1.2-2' }}</strong>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="app-card table-card payment-card">
+      <div class="payment-inner">
+        <div class="control-group">
+          <span class="label">{{ 'POS.PAYMENT' | translate }}</span>
+          <div class="btn-row pos-chip-row">
+            <button type="button" class="estate-filter-btn" *ngFor="let m of paymentMethods"
+              [class.active]="m === paymentMethod" (click)="paymentMethod = m">
+              {{ 'POS.' + m | translate }}
+            </button>
+          </div>
+        </div>
+        <button mat-flat-button color="primary" class="place-order-btn" (click)="placeOrder()"
+          [disabled]="!canPlaceOrder || placing">
+          <span class="material-icons">point_of_sale</span>
+          {{ 'POS.PLACE_ORDER' | translate }}
+        </button>
+      </div>
+    </footer>
   </div>
-  <button mat-flat-button color="primary" (click)="placeOrder()"
-    [disabled]="!canPlaceOrder || placing">
-    {{ 'POS.PLACE_ORDER' | translate }}
-  </button>
-</footer>
+</div>

@@ -1,0 +1,46 @@
+.tables-entity-grid {
+  padding: 18px;
+}
+
+.table-entity-card .entity-card__avatar {
+  font-size: 0.75rem;
+  border-radius: 12px;
+}
+
+.table-entity-card[data-status='AVAILABLE'] .entity-card__avatar {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.table-entity-card[data-status='OCCUPIED'] .entity-card__avatar {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.table-entity-card[data-status='RESERVED'] .entity-card__avatar {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.reservation-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 0 18px 18px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--bg-input);
+  border: 1px dashed var(--line);
+}
+
+html.light-theme .reservation-form,
+.light-theme .reservation-form {
+  background: var(--paper-3);
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+}
+
+.tables-page mat-tab-group {
+  margin-top: 0;
+}

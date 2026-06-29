@@ -1,27 +1,43 @@
-<header class="topbar card">
-  <button mat-icon-button type="button" (click)="toggleSidebar.emit()" [attr.aria-label]="'TOPBAR.TOGGLE_SIDEBAR' | translate">
+<header class="topbar">
+  <button mat-icon-button type="button" class="mobile-menu" (click)="toggleSidebar.emit()">
     <mat-icon>menu</mat-icon>
   </button>
 
-  <mat-form-field class="branch-select" appearance="outline" subscriptSizing="dynamic">
-    <mat-label>{{ 'COMMON.BRANCH' | translate }}</mat-label>
-    <mat-select [(value)]="selectedBranchId" (selectionChange)="onBranchChange($event.value)">
-      <mat-option *ngFor="let b of branches" [value]="b.id">{{ b.name }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="topbar-search">
+    <span class="material-icons">search</span>
+    <input type="search" [(ngModel)]="searchQuery" [placeholder]="'TOPBAR.SEARCH_PLACEHOLDER' | translate" (keyup.enter)="onSearch()">
+  </div>
 
-  <div class="spacer"></div>
+  <div class="topbar-actions">
+    <button type="button" class="tb-lang-btn" [matMenuTriggerFor]="langMenu" [matTooltip]="'TOPBAR.LANGUAGE' | translate">
+      <img class="flag" [src]="activeLanguage.flagUrl" [attr.alt]="activeLanguage.nativeLabel">
+      <span>{{ activeLanguage.nativeLabel }}</span>
+    </button>
+    <mat-menu #langMenu="matMenu">
+      <button mat-menu-item *ngFor="let lang of languages" (click)="setLang(lang.code)">
+        <img class="flag" [src]="lang.flagUrl" width="22" height="16" [attr.alt]="lang.nativeLabel">
+        <span>{{ lang.nativeLabel }}</span>
+      </button>
+    </mat-menu>
 
-  <button mat-icon-button type="button" [matMenuTriggerFor]="langMenu" [attr.aria-label]="'TOPBAR.LANGUAGE' | translate">
-    <mat-icon>language</mat-icon>
-  </button>
-  <mat-menu #langMenu="matMenu">
-    <button mat-menu-item *ngFor="let l of i18n.languages" (click)="setLang(l.code)">{{ l.nativeLabel }}</button>
-  </mat-menu>
+    <button type="button" class="tb-theme-btn" (click)="theme.toggle()" [matTooltip]="themeTooltipKey | translate">
+      <span class="material-icons">{{ theme.isDark ? 'light_mode' : 'dark_mode' }}</span>
+    </button>
 
-  <button mat-icon-button type="button" (click)="theme.toggle()" [attr.aria-label]="themeTooltipKey | translate">
-    <mat-icon>{{ theme.isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
-  </button>
+    <a class="tb-action-btn" routerLink="/admin/notifications"
+       [matBadge]="unreadCount > 0 ? unreadCount : null" matBadgeColor="accent" matBadgeSize="small">
+      <span class="material-icons">notifications</span>
+    </a>
 
-  <span class="user">{{ auth.getCurrentUser()?.fullName || auth.getCurrentUser()?.username }}</span>
+    <button type="button" class="user-btn" [matMenuTriggerFor]="profileMenu">
+      <span class="user-avatar">{{ initials }}</span>
+      <span>{{ auth.getCurrentUser()?.fullName || auth.getCurrentUser()?.username }}</span>
+      <span class="material-icons" style="font-size:18px;color:var(--ink-400)">expand_more</span>
+    </button>
+    <mat-menu #profileMenu="matMenu">
+      <button mat-menu-item routerLink="/admin/profile"><mat-icon>person</mat-icon>{{ 'NAV.PROFILE' | translate }}</button>
+      <button mat-menu-item routerLink="/admin/settings"><mat-icon>settings</mat-icon>{{ 'NAV.SETTINGS' | translate }}</button>
+      <button mat-menu-item (click)="auth.logout()"><mat-icon>logout</mat-icon>{{ 'AUTH.LOGOUT' | translate }}</button>
+    </mat-menu>
+  </div>
 </header>

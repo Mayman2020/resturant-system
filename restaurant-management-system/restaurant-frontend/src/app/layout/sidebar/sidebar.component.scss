@@ -1,92 +1,28 @@
-.sidebar {
-  width: var(--sidebar-w);
-  min-height: 100vh;
-  padding: 16px;
-  display: flex;
+:host {
+  display: block;
+}
+
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .section-label,
+.sidebar.collapsed .nav-label {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-brand {
   flex-direction: column;
-  gap: 12px;
-  background: var(--sidebar-bg, var(--navy-900));
-  color: var(--sidebar-text, #fff);
-  transition: width var(--t-med) var(--e-out), background var(--t-med) var(--e-out);
-  border-inline-end: 1px solid var(--sidebar-border, transparent);
-
-  &.collapsed {
-    width: var(--sidebar-w-collapsed);
-  }
-}
-
-:host-context(.dark-theme) .sidebar,
-html.dark-theme .sidebar {
-  --sidebar-bg: var(--surface-2);
-  --sidebar-text: var(--ink-900);
-  --sidebar-border: var(--line);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
   gap: 10px;
-  font-family: var(--font-display);
-  overflow: hidden;
-  white-space: nowrap;
+  padding: 16px 10px;
 }
 
-.logo {
-  background: var(--brass-500);
-  color: var(--navy-900);
-  padding: 6px 10px;
-  border-radius: var(--r-sm);
-  font-weight: 700;
-  flex-shrink: 0;
+.sidebar.collapsed .collapse-btn {
+  margin-inline-start: 0;
 }
 
-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px;
 }
 
-nav a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--r-sm);
-  color: var(--sidebar-link, #dbe4ef);
-  text-decoration: none;
-  transition: background var(--t-fast);
-}
-
-nav a.active,
-nav a:hover {
-  background: rgba(180, 138, 64, 0.25);
-  color: var(--sidebar-text);
-}
-
-:host-context(.dark-theme) nav a,
-html.dark-theme nav a {
-  --sidebar-link: var(--ink-500);
-}
-
-.logout {
-  margin-top: auto;
-  background: transparent;
-  border: 1px solid var(--sidebar-logout-border, rgba(255, 255, 255, 0.25));
-  color: var(--sidebar-text);
-  padding: 8px;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-}
-
-html.dark-theme .logout {
-  --sidebar-logout-border: var(--line);
-}
-
-.section-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--sidebar-link, #95a4b8);
-  padding: 8px 12px 4px;
+.sidebar.collapsed .sidebar-logout span:not(.material-icons) {
+  display: none;
 }

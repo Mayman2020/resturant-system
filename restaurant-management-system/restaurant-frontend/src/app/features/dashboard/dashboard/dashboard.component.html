@@ -1,37 +1,128 @@
-<app-page-header titleKey="DASHBOARD.TITLE"></app-page-header>
-<div class="stats-grid" *ngIf="stats">
-  <div class="card stat">
-    <span>{{ 'DASHBOARD.TODAY_SALES' | translate }}</span>
-    <strong>{{ stats.todaySales || 0 | number:'1.0-2' }}</strong>
+<div class="sf-dashboard">
+  <div class="loading-wrap" *ngIf="loading">
+    <mat-spinner diameter="44"></mat-spinner>
   </div>
-  <div class="card stat">
-    <span>{{ 'DASHBOARD.OPEN_ORDERS' | translate }}</span>
-    <strong>{{ stats.activeOrders || 0 }}</strong>
-  </div>
-  <div class="card stat">
-    <span>{{ 'DASHBOARD.TODAY_ORDERS' | translate }}</span>
-    <strong>{{ stats.todayOrders || 0 }}</strong>
-  </div>
-  <div class="card stat">
-    <span>{{ 'DASHBOARD.LOW_STOCK' | translate }}</span>
-    <strong>{{ stats.lowStockItems || 0 }}</strong>
-  </div>
-  <div class="card stat">
-    <span>{{ 'DASHBOARD.CUSTOMERS' | translate }}</span>
-    <strong>{{ stats.totalCustomers || 0 }}</strong>
-  </div>
-  <div class="card stat">
-    <span>{{ 'DASHBOARD.STAFF' | translate }}</span>
-    <strong>{{ stats.staffCount || 0 }}</strong>
-  </div>
-</div>
-<div class="charts-grid">
-  <div class="card chart-wrap">
-    <h3>{{ 'DASHBOARD.SALES_TREND' | translate }}</h3>
-    <canvas baseChart [type]="salesChart.type" [data]="salesChart.data" [options]="salesChart.options" height="120"></canvas>
-  </div>
-  <div class="card chart-wrap">
-    <h3>{{ 'DASHBOARD.OPEN_ORDERS' | translate }}</h3>
-    <canvas baseChart [type]="ordersChart.type" [data]="ordersChart.data" [options]="ordersChart.options" height="120"></canvas>
-  </div>
+
+  <ng-container *ngIf="!loading">
+    <!-- Row 1: KPI cards (SF Restro) -->
+    <div class="sf-kpi-row">
+      <article class="sf-kpi">
+        <div class="sf-kpi-body">
+          <span class="sf-kpi-label">{{ 'DASHBOARD.TODAY_SALES' | translate }}</span>
+          <span class="sf-kpi-value">{{ stats.todaySales || 0 | number:'1.0-0' }}</span>
+        </div>
+        <div class="sf-kpi-icon purple"><span class="material-icons">trending_up</span></div>
+      </article>
+      <article class="sf-kpi">
+        <div class="sf-kpi-body">
+          <span class="sf-kpi-label">{{ 'DASHBOARD.TODAY_ORDERS' | translate }}</span>
+          <span class="sf-kpi-value">{{ stats.todayOrders || 0 }}</span>
+        </div>
+        <div class="sf-kpi-icon pink"><span class="material-icons">description</span></div>
+      </article>
+      <article class="sf-kpi">
+        <div class="sf-kpi-body">
+          <span class="sf-kpi-label">{{ 'DASHBOARD.CUSTOMERS' | translate }}</span>
+          <span class="sf-kpi-value">{{ stats.totalCustomers || 0 }}</span>
+        </div>
+        <div class="sf-kpi-icon orange"><span class="material-icons">groups</span></div>
+      </article>
+      <article class="sf-kpi">
+        <div class="sf-kpi-body">
+          <span class="sf-kpi-label">{{ 'DASHBOARD.OPEN_ORDERS' | translate }}</span>
+          <span class="sf-kpi-value">{{ stats.activeOrders || 0 }}</span>
+        </div>
+        <div class="sf-kpi-icon cyan"><span class="material-icons">show_chart</span></div>
+      </article>
+    </div>
+
+    <!-- Row 2: Revenue chart + Kitchen board -->
+    <div class="sf-row-2">
+      <section class="sf-card">
+        <div class="sf-card-head">
+          <h3>{{ 'DASHBOARD.REVENUE_ANALYTICS' | translate }}</h3>
+          <select class="sf-year-select" [(ngModel)]="chartYear">
+            <option [value]="chartYear">{{ 'DASHBOARD.YEAR' | translate }} {{ chartYear }}</option>
+          </select>
+        </div>
+        <div class="sf-card-body">
+          <div class="sf-chart-wrap">
+            <canvas baseChart [data]="revenueChart.data" [options]="revenueChart.options" [type]="revenueChart.type"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="sf-card">
+        <div class="sf-card-head">
+          <h3>{{ 'DASHBOARD.KITCHEN_BOARD' | translate }}</h3>
+          <a class="sf-card-link" routerLink="/admin/kitchen">{{ 'COMMON.VIEW_ALL' | translate }}</a>
+        </div>
+        <div class="sf-card-body">
+          <div class="sf-kitchen-grid">
+            <div class="sf-kitchen-col" *ngFor="let col of kitchenColumns">
+              <h4>{{ col.labelKey | translate }} <span>{{ kitchenCount(col.statuses) }}</span></h4>
+              <div class="sf-ticket" *ngFor="let o of kitchenTickets(col.statuses)">
+                <strong>#{{ o.orderNumber }}</strong>
+              </div>
+              <p *ngIf="!kitchenTickets(col.statuses).length" style="color:var(--ink-400);font-size:0.75rem;margin:0">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Row 3: Floor map + Staff + Trending (SF Restro + Nexus) -->
+    <div class="sf-row-3">
+      <section class="sf-card">
+        <div class="sf-card-head">
+          <h3>{{ 'DASHBOARD.FLOOR_MAP' | translate }}</h3>
+          <a class="sf-card-link" routerLink="/admin/tables">{{ 'COMMON.DETAILS' | translate }}</a>
+        </div>
+        <div class="sf-card-body sf-floor-wrap">
+          <div class="floor-map-grid">
+            <article class="floor-table-card" *ngFor="let t of tables" [attr.data-status]="t.status">
+              <span class="floor-table-num">{{ t.tableNumber }}</span>
+              <span class="floor-table-cap">{{ t.capacity }}p</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sf-card">
+        <div class="sf-card-head">
+          <h3>{{ 'DASHBOARD.STAFF' | translate }}</h3>
+          <a class="sf-card-link" routerLink="/admin/staff">{{ 'COMMON.DETAILS' | translate }}</a>
+        </div>
+        <div class="sf-card-body">
+          <div class="sf-staff-list">
+            <div class="sf-staff-row" *ngFor="let s of staffRoles">
+              <div class="sf-staff-left">
+                <span class="material-icons">{{ s.icon }}</span>
+                {{ s.labelKey | translate }}
+              </div>
+              <span class="sf-staff-count">{{ s.count }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sf-card">
+        <div class="sf-card-head">
+          <h3>{{ 'DASHBOARD.TOP_ITEMS' | translate }}</h3>
+          <a class="sf-card-link" routerLink="/admin/reports">{{ 'COMMON.VIEW_ALL' | translate }}</a>
+        </div>
+        <div class="sf-card-body">
+          <div class="sf-trend-list">
+            <div class="sf-trend-row" *ngFor="let item of topItems; let i = index">
+              <div class="sf-trend-thumb">{{ foodEmoji(i) }}</div>
+              <div class="sf-trend-info">
+                <div class="sf-trend-name">{{ item.itemName }}</div>
+                <div class="sf-trend-orders">{{ 'DASHBOARD.ORDERS_COUNT' | translate }} {{ item.quantitySold }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-container>
 </div>

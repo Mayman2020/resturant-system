@@ -1,81 +1,80 @@
-<app-page-header titleKey="TABLES.TITLE"></app-page-header>
+<div class="app-page tables-page">
+  <app-page-header titleKey="TABLES.TITLE">
+    <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
+  </app-page-header>
 
-<mat-tab-group>
-  <mat-tab [label]="'TABLES.TABLES_TAB' | translate">
-    <div class="card tables-grid">
-      <p *ngIf="!tables.length" class="app-empty-state">{{ 'COMMON.NO_DATA' | translate }}</p>
-      <article class="table-card" *ngFor="let t of tables">
-        <strong>{{ 'TABLES.TABLE_NUMBER' | translate }} {{ t.tableNumber }}</strong>
-        <span>{{ 'TABLES.CAPACITY' | translate }}: {{ t.capacity }}</span>
-        <span class="badge">{{ t.status | enumTranslate:'TABLES' }}</span>
+  <div class="app-list-surface">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'COMMON.ALL' | translate }}</span>
+        <strong>{{ tables.length }}</strong>
       </article>
-    </div>
-  </mat-tab>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'TABLES.AVAILABLE' | translate }}</span>
+        <strong>{{ availableCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'TABLES.OCCUPIED' | translate }}</span>
+        <strong>{{ occupiedCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--pink">
+        <span class="stat-label">{{ 'TABLES.RESERVATIONS_TAB' | translate }}</span>
+        <strong>{{ reservations.length }}</strong>
+      </article>
+    </section>
 
-  <mat-tab [label]="'TABLES.RESERVATIONS_TAB' | translate">
-    <div class="card">
-      <button mat-flat-button color="primary" (click)="toggleReservationForm()">
-        {{ 'TABLES.ADD_RESERVATION' | translate }}
-      </button>
+    <mat-tab-group>
+      <mat-tab [label]="'TABLES.TABLES_TAB' | translate">
+        <section class="app-card table-card">
+          <div class="staff-card-grid tables-entity-grid" *ngIf="tables.length; else noTables">
+            <article class="entity-card table-entity-card" *ngFor="let t of tables" [attr.data-status]="t.status">
+              <div class="entity-card__head">
+                <div class="entity-card__avatar">{{ t.tableNumber }}</div>
+                <div class="entity-card__meta">
+                  <h3 class="entity-card__name">{{ 'TABLES.TABLE_NUMBER' | translate }} {{ t.tableNumber }}</h3>
+                  <p class="entity-card__sub">{{ 'TABLES.CAPACITY' | translate }}: {{ t.capacity }}</p>
+                </div>
+                <span class="status-badge" [attr.data-status]="t.status">{{ t.status | enumTranslate:'TABLES' }}</span>
+              </div>
+            </article>
+          </div>
+          <ng-template #noTables><p class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
+        </section>
+      </mat-tab>
 
-      <form class="reservation-form" *ngIf="showReservationForm" [formGroup]="reservationForm" (ngSubmit)="saveReservation()">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'TABLES.TABLE_NUMBER' | translate }}</mat-label>
-          <mat-select formControlName="tableId">
-            <mat-option *ngFor="let t of tables" [value]="t.id">{{ t.tableNumber }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'TABLES.GUEST_NAME' | translate }}</mat-label>
-          <input matInput formControlName="customerName">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
-          <input matInput formControlName="customerPhone">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'TABLES.PARTY_SIZE' | translate }}</mat-label>
-          <input matInput type="number" formControlName="partySize">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'TABLES.RESERVATION_TIME' | translate }}</mat-label>
-          <input matInput type="datetime-local" formControlName="reservedAt">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'COMMON.NOTES' | translate }}</mat-label>
-          <input matInput formControlName="notes">
-        </mat-form-field>
-        <div class="form-actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
-          <button mat-button type="button" (click)="toggleReservationForm()">{{ 'COMMON.CANCEL' | translate }}</button>
-        </div>
-      </form>
+      <mat-tab [label]="'TABLES.RESERVATIONS_TAB' | translate">
+        <section class="app-card table-card">
+          <div class="estate-table-toolbar">
+            <rms-icon-btn icon="event" tooltipKey="TABLES.ADD_RESERVATION" variant="primary" (clicked)="openReservationDialog()"></rms-icon-btn>
+          </div>
 
-      <table class="app-data-table" *ngIf="reservations.length; else noReservations">
-        <thead>
-          <tr>
-            <th>{{ 'TABLES.GUEST_NAME' | translate }}</th>
-            <th>{{ 'TABLES.TABLE_NUMBER' | translate }}</th>
-            <th>{{ 'TABLES.PARTY_SIZE' | translate }}</th>
-            <th>{{ 'TABLES.RESERVATION_TIME' | translate }}</th>
-            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of reservations">
-            <td>{{ r.customerName }}</td>
-            <td>{{ tableLabel(r.tableId) }}</td>
-            <td>{{ r.partySize }}</td>
-            <td>{{ r.reservedAt | date:'short' }}</td>
-            <td>
-              <button mat-button color="warn" (click)="cancelReservation(r.id)">
-                {{ 'TABLES.CANCEL_RESERVATION' | translate }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <ng-template #noReservations><p class="app-empty-state">{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
-    </div>
-  </mat-tab>
-</mat-tab-group>
+          <div class="app-table-wrap">
+            <table class="app-data-table" *ngIf="reservations.length; else noReservations">
+              <thead>
+                <tr>
+                  <th>{{ 'TABLES.GUEST_NAME' | translate }}</th>
+                  <th>{{ 'TABLES.TABLE_NUMBER' | translate }}</th>
+                  <th>{{ 'TABLES.PARTY_SIZE' | translate }}</th>
+                  <th>{{ 'TABLES.RESERVATION_TIME' | translate }}</th>
+                  <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of reservations">
+                  <td>{{ r.customerName }}</td>
+                  <td>{{ tableLabel(r.tableId) }}</td>
+                  <td>{{ r.partySize }}</td>
+                  <td>{{ r.reservedAt | rmsDate:'datetime' }}</td>
+                  <td>
+                    <rms-icon-btn icon="cancel" tooltipKey="TABLES.CANCEL_RESERVATION" variant="warn" (clicked)="cancelReservation(r.id)"></rms-icon-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #noReservations><p class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
+        </section>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

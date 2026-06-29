@@ -1,0 +1,37 @@
+.order-detail-page .stat-text {
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.order-totals {
+  padding: 18px 20px 22px;
+  border-top: 1px solid var(--line-2);
+  display: grid;
+  gap: 10px;
+}
+
+.total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--ink-500);
+}
+
+.total-row strong {
+  color: var(--ink-900);
+  font-weight: 600;
+}
+
+.total-row.grand {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-2);
+  font-size: 1rem;
+}
+
+.total-row.grand strong {
+  font-size: 1.15rem;
+  color: var(--purple-light);
+}

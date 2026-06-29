@@ -33,7 +33,15 @@ public class UserService {
     private String defaultPassword;
 
     public Page<UserResponse> getAll(Pageable pageable, String q, RoleType roleType) {
-        return userRepository.search(q, roleType, pageable).map(UserMapper::toResponse);
+        Page<User> page;
+        if (q == null || q.isBlank()) {
+            page = roleType != null
+                    ? userRepository.findByRole(roleType, pageable)
+                    : userRepository.findAll(pageable);
+        } else {
+            page = userRepository.searchFiltered(q.trim(), roleType, pageable);
+        }
+        return page.map(UserMapper::toResponse);
     }
 
     public UserResponse getById(Long id) {

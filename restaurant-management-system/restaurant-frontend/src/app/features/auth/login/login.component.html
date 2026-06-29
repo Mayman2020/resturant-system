@@ -1,1 +1,88 @@
-<div class="login-page"><form class="login-card card" [formGroup]="form" (ngSubmit)="submit()"><h1>{{ 'AUTH.LOGIN' | translate }}</h1><p>{{ 'AUTH.WELCOME' | translate }}</p><mat-form-field appearance="outline" class="full"><mat-label>{{ 'AUTH.USERNAME' | translate }}</mat-label><input matInput formControlName="username"></mat-form-field><mat-form-field appearance="outline" class="full"><mat-label>{{ 'AUTH.PASSWORD' | translate }}</mat-label><input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password"><button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword"><mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon></button></mat-form-field><button mat-flat-button color="primary" class="full" [disabled]="loading">{{ 'AUTH.SIGN_IN' | translate }}</button></form></div>
+<div class="rms-login-split">
+  <section class="login-hero">
+    <div class="login-hero-bg" aria-hidden="true"></div>
+    <div class="login-hero-overlay" aria-hidden="true"></div>
+
+    <div class="login-hero-toolbar">
+      <button type="button" class="hero-tool-btn" [matMenuTriggerFor]="langMenu" [attr.aria-label]="'TOPBAR.LANGUAGE' | translate">
+        <img class="flag" [src]="activeLanguage.flagUrl" width="22" height="16" alt="">
+        <span>{{ activeLanguage.nativeLabel }}</span>
+      </button>
+      <mat-menu #langMenu="matMenu">
+        <button mat-menu-item *ngFor="let lang of languages" (click)="setLang(lang.code)">
+          <img class="flag" [src]="lang.flagUrl" width="22" height="16" alt="">
+          <span>{{ lang.nativeLabel }}</span>
+        </button>
+      </mat-menu>
+      <button type="button" class="hero-tool-btn icon-only" (click)="theme.toggle()" [attr.aria-label]="themeTooltipKey | translate">
+        <span class="material-icons">{{ theme.isDark ? 'light_mode' : 'dark_mode' }}</span>
+      </button>
+    </div>
+
+    <div class="hero-brand-block">
+      <img src="assets/brand/logo-cloche.svg" alt="" width="72" height="72" class="hero-logo">
+      <h1 class="hero-title">{{ 'LOGIN.BRAND_TITLE' | translate }}</h1>
+      <p class="hero-subtitle">{{ 'LOGIN.BRAND_SUBTITLE' | translate }}</p>
+      <p class="hero-tagline">{{ 'LOGIN.HERO_TAGLINE' | translate }}</p>
+    </div>
+
+    <footer class="hero-footer">
+      <span class="material-icons">verified_user</span>
+      <span>{{ 'LOGIN.SECURE_LOGIN' | translate }}</span>
+    </footer>
+  </section>
+
+  <section class="login-panel">
+    <div class="login-panel-inner">
+      <h2>{{ 'AUTH.WELCOME_BACK' | translate }}</h2>
+      <p class="panel-sub">{{ 'LOGIN.FORM_SUBTITLE' | translate }}</p>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+        <label class="field-label">{{ 'AUTH.USERNAME' | translate }}</label>
+        <div class="login-field">
+          <span class="material-icons">person_outline</span>
+          <input formControlName="username" type="text" autocomplete="username" [placeholder]="'LOGIN.USERNAME_PLACEHOLDER' | translate">
+        </div>
+
+        <div class="field-row">
+          <label class="field-label">{{ 'AUTH.PASSWORD' | translate }}</label>
+          <a class="field-link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+        </div>
+        <div class="login-field">
+          <span class="material-icons">lock_outline</span>
+          <input formControlName="password" [type]="showPassword ? 'text' : 'password'" [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate">
+          <button type="button" class="field-toggle" (click)="showPassword = !showPassword">
+            <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+          </button>
+        </div>
+
+        <label class="remember-row">
+          <input type="checkbox" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}">
+          <span>{{ 'LOGIN.REMEMBER_ME' | translate }}</span>
+        </label>
+
+        <button type="submit" class="login-submit" [disabled]="form.invalid || loading">
+          <span class="material-icons" *ngIf="!loading">login</span>
+          {{ loading ? ('COMMON.LOADING' | translate) : ('AUTH.SIGN_IN' | translate) }}
+        </button>
+      </form>
+
+      <div class="login-divider"><span>{{ 'LOGIN.OR_CONTINUE' | translate }}</span></div>
+
+      <div class="social-row">
+        <button type="button" class="social-btn" disabled>
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="">
+          Google
+        </button>
+        <button type="button" class="social-btn" disabled>
+          <span class="material-icons ms-icon">window</span>
+          Microsoft
+        </button>
+      </div>
+
+      <footer class="panel-footer">
+        <span>{{ 'LOGIN.COPYRIGHT' | translate }}</span>
+      </footer>
+    </div>
+  </section>
+</div>

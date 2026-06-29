@@ -1,7 +1,9 @@
 {
   "APP": {
     "TITLE": "Restaurant Management",
+    "BRAND": "RMS Restro",
     "TAGLINE": "Restaurant Management System",
+    "TAGLINE_SHORT": "Restaurant Management",
     "LOGO": "RMS"
   },
   "COMMON": {
@@ -11,6 +13,7 @@
     "EDIT": "Edit",
     "ADD": "Add",
     "SEARCH": "Search",
+    "CLEAR": "Clear",
     "REFRESH": "Refresh",
     "LOADING": "Loading...",
     "NO_DATA": "No data available",
@@ -22,6 +25,7 @@
     "NO": "No",
     "TOTAL": "Total",
     "DATE": "Date",
+    "INVALID_DATE": "Invalid date or time",
     "TIME": "Time",
     "NAME": "Name",
     "PHONE": "Phone",
@@ -43,10 +47,16 @@
     "PRINT": "Print",
     "BACK": "Back",
     "DETAILS": "Details",
+    "VIEW_ALL": "View all",
     "CONFIRM": "Confirm",
     "CLOSE": "Close",
     "MINUTES": "min",
-    "BRANCH": "Branch"
+    "BRANCH": "Branch",
+    "PAGE_OF": "Page {{current}} of {{total}}",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "PAGINATION": "Pagination",
+    "ON_PAGE": "On page"
   },
   "MESSAGES": {
     "ORDER_PLACED": "Order placed successfully",
@@ -58,7 +68,14 @@
     "RESERVATION_CREATED": "Reservation created",
     "RESERVATION_CANCELLED": "Reservation cancelled",
     "STOCK_ADJUSTED": "Stock adjusted",
-    "CUSTOMER_CREATED": "Customer added"
+    "CUSTOMER_CREATED": "Customer added",
+    "STATUS_UPDATED": "Status updated"
+  },
+  "DIALOG": {
+    "DELETE_TITLE": "Confirm deletion",
+    "DELETE_MESSAGE": "Are you sure you want to delete this item? This action cannot be undone.",
+    "CANCEL_RESERVATION_TITLE": "Cancel reservation",
+    "CANCEL_RESERVATION_MESSAGE": "Cancel this reservation?"
   },
   "AUTH": {
     "LOGIN": "Sign In",
@@ -68,7 +85,21 @@
     "INVALID_CREDENTIALS": "Invalid username or password",
     "LOGIN_FAILED": "Login failed. Please try again.",
     "LOGOUT": "Logout",
-    "WELCOME": "Welcome back"
+    "WELCOME": "Welcome back",
+    "WELCOME_BACK": "Welcome Back"
+  },
+  "LOGIN": {
+    "BRAND_TITLE": "RESTAURANT",
+    "BRAND_SUBTITLE": "MANAGEMENT SYSTEM",
+    "HERO_TAGLINE": "Manage your restaurant operations efficiently and seamlessly.",
+    "FORM_SUBTITLE": "Sign in to continue to your account",
+    "USERNAME_PLACEHOLDER": "Enter your username",
+    "PASSWORD_PLACEHOLDER": "Enter your password",
+    "REMEMBER_ME": "Remember me",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "OR_CONTINUE": "or continue with",
+    "SECURE_LOGIN": "Secure login",
+    "COPYRIGHT": "© 2026 Restaurant Management System"
   },
   "NAV": {
     "DASHBOARD": "Dashboard",
@@ -82,7 +113,14 @@
     "LOYALTY": "Loyalty",
     "INVENTORY": "Inventory",
     "REPORTS": "Reports",
+    "ANALYTICS": "Analytics",
     "SETTINGS": "Settings",
+    "LOOKUPS": "Lookups",
+    "STAFF": "Staff",
+    "USERS": "Users",
+    "PERMISSIONS": "Permissions",
+    "BILLING": "Billing",
+    "NOTIFICATIONS": "Notifications",
     "BRANCHES": "Branches",
     "PROFILE": "Profile",
     "QR_MENU": "QR Menu"
@@ -101,10 +139,15 @@
     "LIGHT": "Light mode",
     "DARK": "Dark mode",
     "SWITCH_LIGHT": "Switch to light mode",
-    "SWITCH_DARK": "Switch to dark mode"
+    "SWITCH_DARK": "Switch to dark mode",
+    "LIGHT_MODE": "Light mode",
+    "DARK_MODE": "Dark mode",
+    "SEARCH_PLACEHOLDER": "Search something here..."
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
+    "WELCOME": "Welcome back — fresh day, fresh opportunities",
+    "SUBTITLE": "Overview of today's operations and key metrics",
     "TODAY_SALES": "Today's Sales",
     "TODAY_ORDERS": "Today's Orders",
     "OPEN_ORDERS": "Open Orders",
@@ -115,7 +158,47 @@
     "TOP_ITEMS": "Top Selling Items",
     "RECENT_ORDERS": "Recent Orders",
     "CUSTOMERS": "Customers",
-    "STAFF": "Staff"
+    "STAFF": "Staff",
+    "REVENUE_ANALYTICS": "Revenue Analytics",
+    "WEEKLY_TREND": "Weekly trend",
+    "KITCHEN_BOARD": "Live Kitchen Board",
+    "KITCHEN_NEW": "New",
+    "KITCHEN_PREP": "Preparing",
+    "KITCHEN_READY": "Ready",
+    "LIVE": "Live",
+    "ITEMS": "items",
+    "FLOOR_MAP": "Table Occupancy",
+    "OCCUPIED": "occupied",
+    "FLOOR_STATUS": "Floor status",
+    "LAST_30_DAYS": "Last 30 days",
+    "YEAR": "Year",
+    "ORDERS_COUNT": "Orders"
+  },
+  "STAFF": {
+    "SUBTITLE": "Manage your team and roles",
+    "TOTAL": "Total Staff",
+    "MANAGERS": "Manager",
+    "CHEFS": "Chef",
+    "COOKS": "Cooks",
+    "WAITERS": "Waiters",
+    "KITCHEN": "Kitchen",
+    "SERVICE": "Service",
+    "ROSTER": "Team Roster",
+    "MANAGE": "Manage in Settings",
+    "HINT": "Configure staff permissions and branch details from the Settings page.",
+    "SEARCH": "Search by name, email, or phone...",
+    "EMPTY": "No staff members match your search."
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "MARK_ALL_READ": "Mark all as read",
+    "UNREAD": "Unread",
+    "WELCOME_TITLE": "Welcome to RMS",
+    "WELCOME_BODY": "Your restaurant management workspace is ready.",
+    "KITCHEN_TITLE": "Kitchen update",
+    "KITCHEN_BODY": "A kitchen order was updated.",
+    "LOW_STOCK_TITLE": "Low stock alert",
+    "LOW_STOCK_BODY": "Some inventory items are below the minimum level."
   },
   "CHART": {
     "SALES": "Sales",
@@ -138,6 +221,7 @@
   },
   "POS": {
     "TITLE": "Point of Sale",
+    "SUBTITLE": "Create orders and checkout quickly",
     "CATEGORIES": "Categories",
     "PRODUCTS": "Products",
     "CART": "Cart",
@@ -257,6 +341,7 @@
     "COUPON_CODE": "Coupon Code",
     "VALID_UNTIL": "Valid Until",
     "DISCOUNT": "Discount",
+    "ACTIVE_COUPONS": "Active coupons",
     "NO_COUPONS": "No coupons available"
   },
   "INVENTORY": {
@@ -290,6 +375,22 @@
     "DELIVERY_PERFORMANCE": "Delivery Performance",
     "PROFIT_MARGINS": "Profit Margins"
   },
+  "LOOKUPS": {
+    "TITLE": "Lookups",
+    "SUBTITLE": "Manage menu categories, order channels, table zones, and reference lists",
+    "NEW": "New lookup",
+    "CODE": "Code",
+    "NAME_AR": "Arabic name",
+    "NAME_EN": "English name",
+    "SORT_ORDER": "Sort order",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "TAB_MENU_CATEGORY": "Menu categories",
+    "TAB_ORDER_CHANNEL": "Order channels",
+    "TAB_TABLE_ZONE": "Table zones",
+    "TAB_INVENTORY_UNIT": "Inventory units",
+    "TAB_PAYMENT": "Payment methods"
+  },
   "SETTINGS": {
     "TITLE": "Settings",
     "GENERAL": "General Settings",
@@ -306,6 +407,33 @@
     "CALL_WAITER": "Call Waiter",
     "PLACE_ORDER": "Place Order",
     "TABLE": "Table"
+  },
+  "USERS": {
+    "TITLE": "User Management",
+    "NEW": "New User",
+    "USERNAME": "Username",
+    "FULL_NAME": "Full Name",
+    "ROLE": "Role"
+  },
+  "PERMISSIONS": {
+    "TITLE": "Role Permissions",
+    "SUBTITLE": "Configure module access per role",
+    "SELECT_ROLE": "Select role",
+    "MODULE": "Module",
+    "VIEW": "View",
+    "CREATE": "Create",
+    "EDIT": "Edit",
+    "DELETE": "Delete"
+  },
+  "PROFILE": {
+    "TITLE": "My Profile",
+    "ACCOUNT": "Account",
+    "CHANGE_PASSWORD": "Change Password",
+    "CURRENT_PASSWORD": "Current Password",
+    "NEW_PASSWORD": "New Password",
+    "CONFIRM_PASSWORD": "Confirm Password",
+    "PASSWORD_MISMATCH": "Passwords do not match",
+    "PASSWORD_CHANGED": "Password changed successfully"
   },
   "ROLE": {
     "ADMIN": "Administrator",

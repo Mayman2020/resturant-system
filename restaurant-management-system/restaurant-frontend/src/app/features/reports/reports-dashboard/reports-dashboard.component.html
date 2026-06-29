@@ -1,25 +1,37 @@
-<app-page-header titleKey="REPORTS.TITLE"></app-page-header>
+<div class="app-page reports-page">
+  <app-page-header titleKey="REPORTS.TITLE"></app-page-header>
 
-<div class="card summary" *ngIf="dailySales">
-  <div class="stat">
-    <span>{{ 'REPORTS.DAILY' | translate }}</span>
-    <strong>{{ dailySales.totalSales || 0 | number:'1.2-2' }}</strong>
-  </div>
-  <div class="stat">
-    <span>{{ 'CHART.ORDERS' | translate }}</span>
-    <strong>{{ dailySales.orderCount || 0 }}</strong>
+  <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
+
+  <div class="app-list-surface" *ngIf="!loading">
+    <section class="list-stats" *ngIf="dailySales">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'REPORTS.DAILY' | translate }}</span>
+        <strong>{{ dailySales.totalSales || 0 | number:'1.2-2' }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'CHART.ORDERS' | translate }}</span>
+        <strong>{{ dailySales.orderCount || 0 }}</strong>
+      </article>
+    </section>
+
+    <div class="charts-grid">
+      <section class="app-card chart-card">
+        <div class="app-card-header">
+          <span class="app-card-title">{{ 'REPORTS.SALES' | translate }}</span>
+        </div>
+        <div class="app-card-body">
+          <canvas baseChart [type]="salesChart.type" [data]="salesChart.data" [options]="salesChart.options"></canvas>
+        </div>
+      </section>
+      <section class="app-card chart-card">
+        <div class="app-card-header">
+          <span class="app-card-title">{{ 'REPORTS.TOP_ITEMS' | translate }}</span>
+        </div>
+        <div class="app-card-body">
+          <canvas baseChart [type]="topItemsChart.type" [data]="topItemsChart.data" [options]="topItemsChart.options"></canvas>
+        </div>
+      </section>
+    </div>
   </div>
 </div>
-
-<div class="charts-grid">
-  <div class="card chart">
-    <h3>{{ 'REPORTS.SALES' | translate }}</h3>
-    <canvas baseChart [type]="salesChart.type" [data]="salesChart.data" [options]="salesChart.options" height="120"></canvas>
-  </div>
-  <div class="card chart">
-    <h3>{{ 'REPORTS.TOP_ITEMS' | translate }}</h3>
-    <canvas baseChart [type]="topItemsChart.type" [data]="topItemsChart.data" [options]="topItemsChart.options" height="160"></canvas>
-  </div>
-</div>
-
-<p *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</p>

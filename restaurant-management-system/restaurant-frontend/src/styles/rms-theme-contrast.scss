@@ -1,0 +1,127 @@
+/* Theme contrast — dark: no black text, light: no white text on surfaces */
+
+/* Surfaces always use ink tokens (flip per theme) */
+.app-page,
+.page-shell,
+.sf-dashboard,
+.main-content {
+  color: var(--ink-900);
+}
+
+.app-page-title,
+.app-card-title,
+h1, h2, h3, h4,
+.estate-card strong,
+.entity-card__name,
+.table-card strong,
+.delivery-card strong,
+.order-card strong,
+.sf-card-head h3,
+.sf-kpi-value,
+.sf-trend-name,
+.sf-staff-left,
+.chart-card h3 {
+  color: var(--ink-900);
+}
+
+.app-page-subtitle,
+p,
+.entity-card__sub,
+.meta,
+.card-meta,
+.sf-kpi-label,
+.sf-trend-orders {
+  color: var(--ink-500);
+}
+
+.app-data-table tbody td {
+  color: var(--ink-700);
+}
+
+.app-data-table tbody td a,
+.app-data-table tbody td a:visited {
+  color: var(--text-link);
+  font-weight: 600;
+}
+
+.empty-state,
+.app-empty-state {
+  color: var(--ink-500) !important;
+}
+
+.estate-stat-value,
+.stat-pill strong,
+.stat-pill .stat-label {
+  color: var(--ink-900);
+  -webkit-text-fill-color: var(--ink-900);
+  background: none;
+}
+
+.stat-pill .stat-label {
+  color: var(--ink-500);
+  -webkit-text-fill-color: var(--ink-500);
+}
+
+/* Accent zones — white glyphs only on colored chips/buttons */
+.nav-icon-wrap,
+.nav-icon-wrap mat-icon,
+.nav-icon-wrap .nav-icon,
+.sf-kpi-icon,
+.sf-kpi-icon .material-icons,
+.rms-icon-btn--primary,
+.rms-icon-btn--primary .material-icons,
+.estate-filter-btn.active,
+.mat-mdc-unelevated-button:not(:disabled),
+.mat-mdc-raised-button:not(:disabled),
+.srs-pager__page--active,
+.user-avatar,
+.pos-product-icon,
+.pos-product-icon .material-icons {
+  color: var(--text-on-accent) !important;
+  -webkit-text-fill-color: var(--text-on-accent) !important;
+}
+
+.rms-icon-btn--gold,
+.rms-icon-btn--gold .material-icons {
+  color: var(--brand-navy-dark) !important;
+  -webkit-text-fill-color: var(--brand-navy-dark) !important;
+}
+
+html.light-theme,
+.light-theme {
+  .app-page-header {
+    border-color: var(--line);
+    box-shadow: var(--glow-card);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--paper-3) 100%);
+  }
+
+  .app-data-table tbody tr:hover {
+    background: var(--accent-soft);
+  }
+
+  .mat-mdc-tooltip .mdc-tooltip__surface {
+    background: var(--surface);
+    color: var(--ink-900);
+    border: 1px solid var(--line);
+  }
+}
+
+html.dark-theme,
+.dark-theme {
+  .app-page-header {
+    border-color: var(--line);
+    box-shadow: var(--glow-card);
+  }
+
+  .app-data-table tbody tr:hover {
+    background: rgba(212, 168, 83, 0.06);
+  }
+}
+
+.page-back-btn {
+  flex-shrink: 0;
+}
+
+[dir='rtl'] .page-back-btn .material-icons {
+  transform: scaleX(-1);
+}

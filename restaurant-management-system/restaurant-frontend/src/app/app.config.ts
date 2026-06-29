@@ -4,6 +4,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DateFormatAdapter } from './core/adapters/date-format.adapter';
@@ -30,7 +31,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     { provide: APP_INITIALIZER, useFactory: (t: ThemeService) => () => { t.mode; }, deps: [ThemeService], multi: true },
     { provide: APP_INITIALIZER, useFactory: (a: AuthService) => () => a.clearExpiredTokens(), deps: [AuthService], multi: true },
-    { provide: APP_INITIALIZER, useFactory: (p: PermissionService) => () => p.loadMine(), deps: [PermissionService], multi: true },
+    { provide: APP_INITIALIZER, useFactory: (p: PermissionService) => () => { p.loadMine().subscribe({ error: () => {} }); }, deps: [PermissionService], multi: true },
     provideRouter(routes),
     provideAnimationsAsync(),
     { provide: LOCALE_ID, useValue: 'en-US' },
@@ -41,6 +42,7 @@ export const appConfig: ApplicationConfig = {
     provideTranslateHttpLoader({ prefix: '/assets/i18n/', suffix: '.json' }),
     importProvidersFrom(
       MatSnackBarModule,
+      MatDialogModule,
       TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateHttpLoader } })
     )
   ]

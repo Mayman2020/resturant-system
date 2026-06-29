@@ -1,20 +1,57 @@
-<app-page-header titleKey="DELIVERY.TITLE"></app-page-header>
+<div class="app-page delivery-page">
+  <app-page-header titleKey="DELIVERY.TITLE">
+    <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
+  </app-page-header>
 
-<div class="card" *ngIf="!deliveries.length">
-  <p class="app-empty-state">{{ 'DELIVERY.NO_DELIVERIES' | translate }}</p>
-</div>
+  <div class="app-list-surface">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'COMMON.ALL' | translate }}</span>
+        <strong>{{ deliveries.length }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'DELIVERY.PENDING' | translate }}</span>
+        <strong>{{ pendingCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'DELIVERY.IN_TRANSIT' | translate }}</span>
+        <strong>{{ inTransitCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--pink">
+        <span class="stat-label">{{ 'DELIVERY.DELIVERED' | translate }}</span>
+        <strong>{{ deliveredCount }}</strong>
+      </article>
+    </section>
 
-<div class="card deliveries-grid" *ngIf="deliveries.length">
-  <article class="delivery-card" *ngFor="let d of deliveries">
-    <header>
-      <strong>{{ 'ORDERS.ORDER_NUMBER' | translate }}{{ d.orderId }}</strong>
-      <span class="badge">{{ d.status | enumTranslate:'DELIVERY' }}</span>
-    </header>
-    <p *ngIf="d.deliveryAddress"><span>{{ 'DELIVERY.ADDRESS' | translate }}:</span> {{ d.deliveryAddress }}</p>
-    <p *ngIf="d.deliveryFee != null"><span>{{ 'DELIVERY.FEE' | translate }}:</span> {{ d.deliveryFee }}</p>
-    <p *ngIf="d.estimatedMinutes != null"><span>{{ 'DELIVERY.ETA' | translate }}:</span> {{ d.estimatedMinutes }} {{ 'COMMON.MINUTES' | translate }}</p>
-    <button mat-stroked-button *ngIf="nextStatus(d.status)" (click)="advanceStatus(d)">
-      {{ 'ORDERS.ADVANCE' | translate }}
-    </button>
-  </article>
+    <section class="app-card table-card">
+      <p *ngIf="!deliveries.length" class="empty-state">{{ 'DELIVERY.NO_DELIVERIES' | translate }}</p>
+      <div class="staff-card-grid" *ngIf="deliveries.length">
+        <article class="entity-card delivery-entity-card" *ngFor="let d of deliveries">
+          <div class="entity-card__head">
+            <div class="entity-card__avatar">
+              <span class="material-icons">local_shipping</span>
+            </div>
+            <div class="entity-card__meta">
+              <h3 class="entity-card__name">{{ 'ORDERS.ORDER_NUMBER' | translate }} #{{ d.orderId }}</h3>
+              <p class="entity-card__sub" *ngIf="d.deliveryAddress">{{ d.deliveryAddress }}</p>
+            </div>
+            <span class="status-badge" [attr.data-status]="d.status">{{ d.status | enumTranslate:'DELIVERY' }}</span>
+          </div>
+          <div class="entity-card__body">
+            <div class="entity-card__row" *ngIf="d.deliveryFee != null">
+              <span>{{ 'DELIVERY.FEE' | translate }}</span>
+              <strong>{{ d.deliveryFee | number:'1.2-2' }}</strong>
+            </div>
+            <div class="entity-card__row" *ngIf="d.estimatedMinutes != null">
+              <span>{{ 'DELIVERY.ETA' | translate }}</span>
+              <strong>{{ d.estimatedMinutes }} {{ 'COMMON.MINUTES' | translate }}</strong>
+            </div>
+          </div>
+          <div class="entity-card__actions">
+            <rms-icon-btn *ngIf="nextStatus(d.status)" icon="arrow_forward" tooltipKey="ORDERS.ADVANCE" variant="primary" (clicked)="advanceStatus(d)"></rms-icon-btn>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
 </div>

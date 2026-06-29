@@ -1,45 +1,40 @@
-<app-page-header titleKey="LOYALTY.TITLE"></app-page-header>
-<mat-tab-group>
-  <mat-tab [label]="'LOYALTY.COUPONS_TAB' | translate">
-    <div class="card">
-      <button mat-flat-button color="primary" (click)="toggleCouponForm()">{{ 'COMMON.ADD' | translate }}</button>
+<div class="app-page loyalty-page">
+  <app-page-header titleKey="LOYALTY.TITLE">
+    <rms-icon-btn icon="add" tooltipKey="COMMON.ADD" variant="primary" (clicked)="openCouponDialog()"></rms-icon-btn>
+  </app-page-header>
 
-      <form class="coupon-form" *ngIf="showCouponForm" [formGroup]="couponForm" (ngSubmit)="saveCoupon()">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'LOYALTY.COUPON_CODE' | translate }}</mat-label>
-          <input matInput formControlName="code">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'COMMON.NOTES' | translate }}</mat-label>
-          <input matInput formControlName="description">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'LOYALTY.DISCOUNT' | translate }}</mat-label>
-          <input matInput type="number" formControlName="discountValue">
-        </mat-form-field>
-        <div class="form-actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
-          <button mat-button type="button" (click)="toggleCouponForm()">{{ 'COMMON.CANCEL' | translate }}</button>
-        </div>
-      </form>
+  <div class="app-list-surface">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'LOYALTY.COUPONS_TAB' | translate }}</span>
+        <strong>{{ coupons.length }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'LOYALTY.ACTIVE_COUPONS' | translate }}</span>
+        <strong>{{ activeCouponsCount }}</strong>
+      </article>
+    </section>
 
-      <table class="app-data-table" *ngIf="coupons.length; else noCoupons">
-        <thead>
-          <tr>
-            <th>{{ 'LOYALTY.CODE' | translate }}</th>
-            <th>{{ 'COMMON.DISCOUNT' | translate }}</th>
-            <th>{{ 'LOYALTY.VALID_UNTIL' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let c of coupons">
-            <td>{{ c.code }}</td>
-            <td>{{ c.discountValue }}</td>
-            <td>{{ c.validUntil }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <ng-template #noCoupons><p class="app-empty-state">{{ 'LOYALTY.NO_COUPONS' | translate }}</p></ng-template>
-    </div>
-  </mat-tab>
-</mat-tab-group>
+    <section class="app-card table-card">
+      <div class="app-table-wrap">
+        <table class="app-data-table" *ngIf="coupons.length; else noCoupons">
+          <thead>
+            <tr>
+              <th>{{ 'LOYALTY.CODE' | translate }}</th>
+              <th>{{ 'COMMON.DISCOUNT' | translate }}</th>
+              <th>{{ 'LOYALTY.VALID_UNTIL' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of coupons">
+              <td>{{ c.code }}</td>
+              <td>{{ c.discountValue }}</td>
+              <td>{{ c.validUntil }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noCoupons><p class="empty-state">{{ 'LOYALTY.NO_COUPONS' | translate }}</p></ng-template>
+    </section>
+  </div>
+</div>

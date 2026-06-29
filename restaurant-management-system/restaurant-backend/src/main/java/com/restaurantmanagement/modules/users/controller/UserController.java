@@ -7,6 +7,7 @@ import com.restaurantmanagement.modules.users.dto.UserResponse;
 import com.restaurantmanagement.modules.users.entity.RoleType;
 import com.restaurantmanagement.modules.users.service.UserService;
 import com.restaurantmanagement.shared.response.ApiResponse;
+import com.restaurantmanagement.shared.response.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,11 +27,11 @@ public class UserController {
 
     @GetMapping
     @RequiresPermission(module = "users", action = "view")
-    public ResponseEntity<ApiResponse<Page<UserResponse>>> getAll(
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) RoleType role,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.ok(userService.getAll(pageable, q, role)));
+        return ResponseEntity.ok(ApiResponse.ok(PageResponse.from(userService.getAll(pageable, q, role))));
     }
 
     @GetMapping("/me")

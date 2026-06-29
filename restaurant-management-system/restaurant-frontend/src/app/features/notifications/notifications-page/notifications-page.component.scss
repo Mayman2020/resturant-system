@@ -1,0 +1,23 @@
+.notifications-page .notif-row {
+  position: relative;
+  padding-inline-start: 24px;
+}
+
+.notifications-page .notif-row::before {
+  content: '';
+  position: absolute;
+  inset-block: 12px;
+  inset-inline-start: 0;
+  width: 4px;
+  border-radius: 4px;
+  background: transparent;
+  transition: background var(--t-fast);
+}
+
+.notifications-page .notif-row.is-unread::before {
+  background: var(--gradient-brand);
+}
+
+.notifications-page .notif-row.is-unread {
+  background: linear-gradient(90deg, var(--ember-soft), transparent 60%);
+}

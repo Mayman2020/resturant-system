@@ -1,0 +1,31 @@
+<div class="app-page notifications-page">
+  <app-page-header titleKey="NOTIFICATIONS.TITLE">
+    <rms-icon-btn icon="done_all" tooltipKey="NOTIFICATIONS.MARK_ALL_READ" (clicked)="markAllRead()"></rms-icon-btn>
+    <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
+  </app-page-header>
+
+  <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
+
+  <div class="app-list-surface" *ngIf="!loading">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'COMMON.ALL' | translate }}</span>
+        <strong>{{ total }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'NOTIFICATIONS.UNREAD' | translate }}</span>
+        <strong>{{ unreadCount }}</strong>
+      </article>
+    </section>
+
+    <section class="app-card table-card notifications-card">
+      <div class="notif-row" *ngFor="let n of rows" [class.is-unread]="!n.read" (click)="onClick(n)">
+        <div class="notif-title">{{ text(n.titleKey, n) }}</div>
+        <div class="notif-body">{{ text(n.bodyKey, n) }}</div>
+        <div class="notif-date">{{ n.createdAt | rmsDate:'datetime' }}</div>
+      </div>
+      <p *ngIf="!rows.length" class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p>
+      <app-table-pager [length]="total" [pageSize]="size" [pageIndex]="page" (pageIndexChange)="onPageIndexChange($event)"></app-table-pager>
+    </section>
+  </div>
+</div>

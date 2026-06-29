@@ -1,1 +1,24 @@
-.chart{height:360px}
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.chart-card {
+  padding: 20px 24px;
+}
+
+.chart-card h3 {
+  margin: 0 0 12px;
+  color: var(--ink-700);
+}
+
+.chart-card canvas {
+  max-height: 360px;
+}
+
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,6 +3,7 @@ import com.restaurantmanagement.modules.customers.dto.*;
 import com.restaurantmanagement.modules.customers.service.CustomerService;
 import com.restaurantmanagement.modules.permission.annotation.RequiresPermission;
 import com.restaurantmanagement.shared.response.ApiResponse;
+import com.restaurantmanagement.shared.response.PageResponse;
 import jakarta.validation.Valid; import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page; import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort; import org.springframework.data.web.PageableDefault;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
     private final CustomerService customerService;
     @GetMapping @RequiresPermission(module = "customers", action = "view")
-    public ResponseEntity<ApiResponse<Page<CustomerResponse>>> list(@RequestParam(required = false) String q,
+    public ResponseEntity<ApiResponse<PageResponse<CustomerResponse>>> list(@RequestParam(required = false) String q,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.ok(customerService.list(q, pageable)));
+        return ResponseEntity.ok(ApiResponse.ok(PageResponse.from(customerService.list(q, pageable))));
     }
     @GetMapping("/{id}") @RequiresPermission(module = "customers", action = "view")
     public ResponseEntity<ApiResponse<CustomerResponse>> getById(@PathVariable Long id) {

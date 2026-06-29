@@ -1,22 +1,65 @@
-<app-page-header titleKey="ORDERS.TITLE"></app-page-header>
+<div class="app-page">
+  <app-page-header titleKey="ORDERS.TITLE">
+    <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
+  </app-page-header>
 
-<div class="card" *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</div>
+  <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
 
-<div class="card" *ngIf="!loading && !orders.length">
-  <p class="app-empty-state">{{ 'ORDERS.NO_ORDERS' | translate }}</p>
-</div>
+  <div class="app-list-surface" *ngIf="!loading">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'COMMON.ALL' | translate }}</span>
+        <strong>{{ orders.length }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'ORDERS.PENDING' | translate }}</span>
+        <strong>{{ pendingCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'ORDERS.PREPARING' | translate }}</span>
+        <strong>{{ preparingCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--pink">
+        <span class="stat-label">{{ 'ORDERS.COMPLETED' | translate }}</span>
+        <strong>{{ completedCount }}</strong>
+      </article>
+    </section>
 
-<div class="card orders-table" *ngIf="!loading && orders.length">
-  <div class="row header">
-    <span>{{ 'ORDERS.ORDER_NUMBER' | translate }}</span>
-    <span>{{ 'ORDERS.ORDER_TYPE' | translate }}</span>
-    <span>{{ 'COMMON.STATUS' | translate }}</span>
-    <span>{{ 'COMMON.AMOUNT' | translate }}</span>
+    <section class="app-card table-card">
+      <div class="estate-table-toolbar">
+        <div class="toolbar-row">
+          <label class="estate-search-inline">
+            <span class="material-icons">search</span>
+            <input [(ngModel)]="search" (keyup.enter)="applyFilter()" [placeholder]="'COMMON.SEARCH' | translate">
+          </label>
+          <rms-icon-btn icon="filter_alt_off" tooltipKey="COMMON.CLEAR" (clicked)="search = ''; applyFilter()"></rms-icon-btn>
+        </div>
+      </div>
+
+      <div class="app-table-wrap">
+        <table class="app-data-table" *ngIf="pagedOrders.length; else emptyTpl">
+          <thead>
+            <tr>
+              <th>{{ 'ORDERS.ORDER_NUMBER' | translate }}</th>
+              <th>{{ 'ORDERS.ORDER_TYPE' | translate }}</th>
+              <th>{{ 'COMMON.STATUS' | translate }}</th>
+              <th>{{ 'COMMON.AMOUNT' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of pagedOrders">
+              <td><a [routerLink]="['/admin/orders', o.id]">#{{ o.orderNumber }}</a></td>
+              <td>{{ o.orderType | enumTranslate:'ORDERS' }}</td>
+              <td><span class="status-badge" [attr.data-status]="o.status">{{ o.status | enumTranslate:'ORDERS' }}</span></td>
+              <td>{{ o.totalAmount | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #emptyTpl>
+        <p class="empty-state">{{ 'ORDERS.NO_ORDERS' | translate }}</p>
+      </ng-template>
+      <app-table-pager [length]="filteredOrders.length" [pageSize]="size" [pageIndex]="page" (pageIndexChange)="onPageChange($event)"></app-table-pager>
+    </section>
   </div>
-  <a *ngFor="let o of orders" [routerLink]="['/admin/orders', o.id]" class="row">
-    <span>#{{ o.orderNumber }}</span>
-    <span>{{ o.orderType | enumTranslate:'ORDERS' }}</span>
-    <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
-    <span>{{ o.totalAmount | number:'1.2-2' }}</span>
-  </a>
 </div>

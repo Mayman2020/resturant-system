@@ -1,1 +1,9 @@
-<div class="layout" [ngClass]="{ collapsed: sidebarCollapsed, rtl: i18n.isRtl }"><app-sidebar [collapsed]="sidebarCollapsed" [lang]="lang" (collapseToggle)="toggleSidebar()"></app-sidebar><div class="main"><app-topbar (toggleSidebar)="toggleSidebar()"></app-topbar><main class="content page-shell"><router-outlet></router-outlet></main></div></div>
+<div class="app-shell" [class.sidebar-collapsed]="sidebarCollapsed" [class.rtl]="i18n.isRtl">
+  <app-sidebar [collapsed]="sidebarCollapsed" [lang]="lang" (collapseToggle)="toggleSidebar()"></app-sidebar>
+  <div class="main-area">
+    <app-topbar (toggleSidebar)="toggleSidebar()"></app-topbar>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

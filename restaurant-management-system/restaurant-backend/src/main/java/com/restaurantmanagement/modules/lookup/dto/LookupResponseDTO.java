@@ -1,0 +1,18 @@
+package com.restaurantmanagement.modules.lookup.dto;
+
+import com.restaurantmanagement.modules.lookup.entity.LookupType;
+import lombok.Builder;
+import lombok.Data;
+
+@Data @Builder
+public class LookupResponseDTO {
+    private Long id;
+    private LookupType type;
+    private String code;
+    private String nameAr;
+    private String nameEn;
+    private Long parentId;
+    private Integer sortOrder;
+    private boolean active;
+    private boolean locked;
+}

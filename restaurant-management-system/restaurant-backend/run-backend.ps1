@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [string]$Profile = "",
     [switch]$SkipBuild,
@@ -6,8 +6,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$DefaultPort = 8082
-$PreferredDevPort = 8082
+$DefaultPort = 8083
+$PreferredDevPort = 8083
 $PortRangeEnd = 8090
 $ExpectedProcess = "java"
 $ContextPath = "/api/v1"

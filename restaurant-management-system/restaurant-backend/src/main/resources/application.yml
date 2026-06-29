@@ -49,10 +49,10 @@ jwt:
 
 user:
   default:
-    password: ${USER_DEFAULT_PASSWORD:admin123}
+    password: ${USER_DEFAULT_PASSWORD:Dev@Local2026!}
 
 server:
-  port: 8082
+  port: 8083
   servlet:
     context-path: /api/v1
 

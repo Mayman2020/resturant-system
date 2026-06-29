@@ -1,72 +1,60 @@
-<app-page-header titleKey="MENU.TITLE"></app-page-header>
+<div class="app-page">
+  <app-page-header titleKey="MENU.TITLE">
+    <rms-icon-btn icon="category" tooltipKey="MENU.ADD_CATEGORY" (clicked)="openCategoryDialog()"></rms-icon-btn>
+    <rms-icon-btn icon="restaurant" tooltipKey="MENU.ADD_ITEM" variant="primary" (clicked)="openItemDialog()"></rms-icon-btn>
+  </app-page-header>
 
-<div class="grid">
-  <section class="card">
-    <div class="section-header">
-      <h3>{{ 'MENU.CATEGORIES' | translate }}</h3>
-      <button mat-stroked-button (click)="toggleCategoryForm()">{{ 'MENU.ADD_CATEGORY' | translate }}</button>
+  <div class="app-list-surface">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'MENU.CATEGORIES' | translate }}</span>
+        <strong>{{ categories.length }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'MENU.ITEMS' | translate }}</span>
+        <strong>{{ items.length }}</strong>
+      </article>
+    </section>
+
+    <div class="menu-grid">
+      <section class="app-card">
+        <div class="app-card-header">
+          <span class="app-card-title">{{ 'MENU.CATEGORIES' | translate }}</span>
+        </div>
+        <div class="app-card-body">
+          <ul class="list">
+            <li *ngFor="let c of categories">{{ c | localizedName }}</li>
+          </ul>
+          <p *ngIf="!categories.length" class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p>
+        </div>
+      </section>
+
+      <section class="app-card table-card">
+        <div class="app-card-header">
+          <span class="app-card-title">{{ 'MENU.ITEMS' | translate }}</span>
+        </div>
+        <div class="app-table-wrap">
+          <table class="app-data-table" *ngIf="items.length; else noItems">
+            <thead>
+              <tr>
+                <th>{{ 'COMMON.NAME' | translate }}</th>
+                <th>{{ 'MENU.PRICE' | translate }}</th>
+                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of items">
+                <td>{{ i | localizedName }}</td>
+                <td>{{ i.price | number:'1.2-2' }}</td>
+                <td>
+                  <rms-icon-btn icon="delete" tooltipKey="COMMON.DELETE" variant="warn" (clicked)="deleteItem(i.id)"></rms-icon-btn>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noItems><p class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
+      </section>
     </div>
-
-    <form *ngIf="showCategoryForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="inline-form">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'COMMON.NAME' | translate }}</mat-label>
-        <input matInput formControlName="name">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'COMMON.NAME' | translate }} (AR)</mat-label>
-        <input matInput formControlName="nameAr">
-      </mat-form-field>
-      <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
-    </form>
-
-    <ul class="list">
-      <li *ngFor="let c of categories">{{ c | localizedName }}</li>
-    </ul>
-    <p *ngIf="!categories.length" class="app-empty-state">{{ 'COMMON.NO_DATA' | translate }}</p>
-  </section>
-
-  <section class="card">
-    <div class="section-header">
-      <h3>{{ 'MENU.ITEMS' | translate }}</h3>
-      <button mat-stroked-button (click)="toggleItemForm()">{{ 'MENU.ADD_ITEM' | translate }}</button>
-    </div>
-
-    <form *ngIf="showItemForm" [formGroup]="itemForm" (ngSubmit)="saveItem()" class="inline-form">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'COMMON.NAME' | translate }}</mat-label>
-        <input matInput formControlName="name">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'MENU.CATEGORY' | translate }}</mat-label>
-        <mat-select formControlName="categoryId">
-          <mat-option *ngFor="let c of categories" [value]="c.id">{{ c | localizedName }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'MENU.PRICE' | translate }}</mat-label>
-        <input matInput type="number" formControlName="price">
-      </mat-form-field>
-      <button mat-flat-button color="primary" type="submit" [disabled]="saving">{{ 'COMMON.SAVE' | translate }}</button>
-    </form>
-
-    <table class="app-data-table" *ngIf="items.length; else noItems">
-      <thead>
-        <tr>
-          <th>{{ 'COMMON.NAME' | translate }}</th>
-          <th>{{ 'MENU.PRICE' | translate }}</th>
-          <th>{{ 'COMMON.ACTIONS' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let i of items">
-          <td>{{ i | localizedName }}</td>
-          <td>{{ i.price | number:'1.2-2' }}</td>
-          <td>
-            <button mat-button color="warn" (click)="deleteItem(i.id)">{{ 'COMMON.DELETE' | translate }}</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noItems><p class="app-empty-state">{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
-  </section>
+  </div>
 </div>

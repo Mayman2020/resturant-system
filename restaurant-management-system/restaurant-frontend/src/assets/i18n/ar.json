@@ -1,7 +1,9 @@
 {
   "APP": {
     "TITLE": "إدارة المطعم",
+    "BRAND": "RMS Restro",
     "TAGLINE": "نظام إدارة المطاعم",
+    "TAGLINE_SHORT": "Restaurant Management",
     "LOGO": "RMS"
   },
   "COMMON": {
@@ -11,6 +13,7 @@
     "EDIT": "تعديل",
     "ADD": "إضافة",
     "SEARCH": "بحث",
+    "CLEAR": "مسح",
     "REFRESH": "تحديث",
     "LOADING": "جاري التحميل...",
     "NO_DATA": "لا توجد بيانات",
@@ -22,6 +25,7 @@
     "NO": "لا",
     "TOTAL": "الإجمالي",
     "DATE": "التاريخ",
+    "INVALID_DATE": "تاريخ أو وقت غير صالح",
     "TIME": "الوقت",
     "NAME": "الاسم",
     "PHONE": "الهاتف",
@@ -43,10 +47,16 @@
     "PRINT": "طباعة",
     "BACK": "رجوع",
     "DETAILS": "التفاصيل",
+    "VIEW_ALL": "عرض الكل",
     "CONFIRM": "تأكيد",
     "CLOSE": "إغلاق",
     "MINUTES": "د",
-    "BRANCH": "الفرع"
+    "BRANCH": "الفرع",
+    "PAGE_OF": "صفحة {{current}} من {{total}}",
+    "PREVIOUS": "السابق",
+    "NEXT": "التالي",
+    "PAGINATION": "التصفح",
+    "ON_PAGE": "في الصفحة"
   },
   "MESSAGES": {
     "ORDER_PLACED": "تم تأكيد الطلب بنجاح",
@@ -58,7 +68,14 @@
     "RESERVATION_CREATED": "تم إنشاء الحجز",
     "RESERVATION_CANCELLED": "تم إلغاء الحجز",
     "STOCK_ADJUSTED": "تم تعديل المخزون",
-    "CUSTOMER_CREATED": "تم إضافة العميل"
+    "CUSTOMER_CREATED": "تم إضافة العميل",
+    "STATUS_UPDATED": "تم تحديث الحالة"
+  },
+  "DIALOG": {
+    "DELETE_TITLE": "تأكيد الحذف",
+    "DELETE_MESSAGE": "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
+    "CANCEL_RESERVATION_TITLE": "إلغاء الحجز",
+    "CANCEL_RESERVATION_MESSAGE": "هل تريد إلغاء هذا الحجز؟"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -68,7 +85,21 @@
     "INVALID_CREDENTIALS": "اسم المستخدم أو كلمة المرور غير صحيحة",
     "LOGIN_FAILED": "فشل تسجيل الدخول. حاول مرة أخرى.",
     "LOGOUT": "تسجيل الخروج",
-    "WELCOME": "مرحباً بعودتك"
+    "WELCOME": "مرحباً بعودتك",
+    "WELCOME_BACK": "مرحباً بعودتك"
+  },
+  "LOGIN": {
+    "BRAND_TITLE": "RESTAURANT",
+    "BRAND_SUBTITLE": "MANAGEMENT SYSTEM",
+    "HERO_TAGLINE": "أدر عمليات مطعمك بكفاءة واحترافية.",
+    "FORM_SUBTITLE": "سجّل الدخول للمتابعة إلى حسابك",
+    "USERNAME_PLACEHOLDER": "أدخل اسم المستخدم",
+    "PASSWORD_PLACEHOLDER": "أدخل كلمة المرور",
+    "REMEMBER_ME": "تذكرني",
+    "FORGOT_PASSWORD": "نسيت كلمة المرور؟",
+    "OR_CONTINUE": "أو تابع عبر",
+    "SECURE_LOGIN": "تسجيل دخول آمن",
+    "COPYRIGHT": "© 2026 Restaurant Management System"
   },
   "NAV": {
     "DASHBOARD": "لوحة التحكم",
@@ -82,7 +113,14 @@
     "LOYALTY": "الولاء",
     "INVENTORY": "المخزون",
     "REPORTS": "التقارير",
+    "ANALYTICS": "التحليلات",
     "SETTINGS": "الإعدادات",
+    "LOOKUPS": "القوائم المرجعية",
+    "STAFF": "الموظفون",
+    "USERS": "المستخدمون",
+    "PERMISSIONS": "الصلاحيات",
+    "BILLING": "الفوترة",
+    "NOTIFICATIONS": "الإشعارات",
     "BRANCHES": "الفروع",
     "PROFILE": "الملف الشخصي",
     "QR_MENU": "قائمة QR"
@@ -101,10 +139,15 @@
     "LIGHT": "الوضع الفاتح",
     "DARK": "الوضع الداكن",
     "SWITCH_LIGHT": "التبديل للوضع الفاتح",
-    "SWITCH_DARK": "التبديل للوضع الداكن"
+    "SWITCH_DARK": "التبديل للوضع الداكن",
+    "LIGHT_MODE": "الوضع الفاتح",
+    "DARK_MODE": "الوضع الداكن",
+    "SEARCH_PLACEHOLDER": "ابحث عن شيء هنا..."
   },
   "DASHBOARD": {
     "TITLE": "لوحة التحكم",
+    "WELCOME": "أهلاً بك — يوم جديد وفرص جديدة",
+    "SUBTITLE": "نظرة عامة على عمليات اليوم والمؤشرات الرئيسية",
     "TODAY_SALES": "مبيعات اليوم",
     "TODAY_ORDERS": "طلبات اليوم",
     "OPEN_ORDERS": "طلبات مفتوحة",
@@ -115,7 +158,47 @@
     "TOP_ITEMS": "الأصناف الأكثر مبيعاً",
     "RECENT_ORDERS": "أحدث الطلبات",
     "CUSTOMERS": "العملاء",
-    "STAFF": "الموظفون"
+    "STAFF": "الموظفون",
+    "REVENUE_ANALYTICS": "تحليل الإيرادات",
+    "WEEKLY_TREND": "اتجاه الأسبوع",
+    "KITCHEN_BOARD": "لوحة المطبخ المباشرة",
+    "KITCHEN_NEW": "جديد",
+    "KITCHEN_PREP": "تحضير",
+    "KITCHEN_READY": "جاهز",
+    "LIVE": "مباشر",
+    "ITEMS": "أصناف",
+    "FLOOR_MAP": "خريطة الطاولات",
+    "OCCUPIED": "مشغولة",
+    "FLOOR_STATUS": "حالة الصالة",
+    "LAST_30_DAYS": "آخر 30 يوم",
+    "YEAR": "السنة",
+    "ORDERS_COUNT": "طلبات"
+  },
+  "STAFF": {
+    "SUBTITLE": "إدارة فريق العمل والأدوار",
+    "TOTAL": "إجمالي الموظفين",
+    "MANAGERS": "المديرون",
+    "CHEFS": "رؤساء الطهاة",
+    "COOKS": "الطهاة",
+    "WAITERS": "النوادل",
+    "KITCHEN": "المطبخ",
+    "SERVICE": "الخدمة",
+    "ROSTER": "قائمة الفريق",
+    "MANAGE": "إدارة الإعدادات",
+    "HINT": "يمكنك إدارة صلاحيات الموظفين وتفاصيل الفروع من صفحة الإعدادات.",
+    "SEARCH": "ابحث بالاسم أو البريد أو الهاتف...",
+    "EMPTY": "لا يوجد موظفون مطابقون للبحث."
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "الإشعارات",
+    "MARK_ALL_READ": "تعليم الكل كمقروء",
+    "UNREAD": "غير مقروء",
+    "WELCOME_TITLE": "مرحباً بك في نظام المطعم",
+    "WELCOME_BODY": "مساحة إدارة المطعم جاهزة للاستخدام.",
+    "KITCHEN_TITLE": "تحديث المطبخ",
+    "KITCHEN_BODY": "تم تحديث أحد طلبات المطبخ.",
+    "LOW_STOCK_TITLE": "تنبيه مخزون منخفض",
+    "LOW_STOCK_BODY": "بعض أصناف المخزون أقل من الحد الأدنى."
   },
   "CHART": {
     "SALES": "المبيعات",
@@ -138,6 +221,7 @@
   },
   "POS": {
     "TITLE": "نقطة البيع",
+    "SUBTITLE": "إنشاء الطلبات وإتمام الدفع بسرعة",
     "CATEGORIES": "التصنيفات",
     "PRODUCTS": "المنتجات",
     "CART": "السلة",
@@ -257,6 +341,7 @@
     "COUPON_CODE": "رمز الكوبون",
     "VALID_UNTIL": "صالح حتى",
     "DISCOUNT": "الخصم",
+    "ACTIVE_COUPONS": "كوبونات نشطة",
     "NO_COUPONS": "لا توجد كوبونات"
   },
   "INVENTORY": {
@@ -290,6 +375,22 @@
     "DELIVERY_PERFORMANCE": "أداء التوصيل",
     "PROFIT_MARGINS": "هوامش الربح"
   },
+  "LOOKUPS": {
+    "TITLE": "القوائم المرجعية",
+    "SUBTITLE": "إدارة فئات المنيو وقنوات الطلب ومناطق الطاولات والقوائم المرجعية",
+    "NEW": "قيمة جديدة",
+    "CODE": "الرمز",
+    "NAME_AR": "الاسم بالعربية",
+    "NAME_EN": "الاسم بالإنجليزية",
+    "SORT_ORDER": "ترتيب العرض",
+    "ACTIVE": "نشط",
+    "INACTIVE": "غير نشط",
+    "TAB_MENU_CATEGORY": "فئات المنيو",
+    "TAB_ORDER_CHANNEL": "قنوات الطلب",
+    "TAB_TABLE_ZONE": "مناطق الطاولات",
+    "TAB_INVENTORY_UNIT": "وحدات المخزون",
+    "TAB_PAYMENT": "طرق الدفع"
+  },
   "SETTINGS": {
     "TITLE": "الإعدادات",
     "GENERAL": "إعدادات عامة",
@@ -306,6 +407,33 @@
     "CALL_WAITER": "استدعاء النادل",
     "PLACE_ORDER": "تقديم طلب",
     "TABLE": "طاولة"
+  },
+  "USERS": {
+    "TITLE": "إدارة المستخدمين",
+    "NEW": "مستخدم جديد",
+    "USERNAME": "اسم المستخدم",
+    "FULL_NAME": "الاسم الكامل",
+    "ROLE": "الدور"
+  },
+  "PERMISSIONS": {
+    "TITLE": "صلاحيات الأدوار",
+    "SUBTITLE": "تكوين صلاحيات الوصول لكل دور",
+    "SELECT_ROLE": "اختر الدور",
+    "MODULE": "الوحدة",
+    "VIEW": "عرض",
+    "CREATE": "إنشاء",
+    "EDIT": "تعديل",
+    "DELETE": "حذف"
+  },
+  "PROFILE": {
+    "TITLE": "ملفي الشخصي",
+    "ACCOUNT": "الحساب",
+    "CHANGE_PASSWORD": "تغيير كلمة المرور",
+    "CURRENT_PASSWORD": "كلمة المرور الحالية",
+    "NEW_PASSWORD": "كلمة المرور الجديدة",
+    "CONFIRM_PASSWORD": "تأكيد كلمة المرور",
+    "PASSWORD_MISMATCH": "كلمتا المرور غير متطابقتين",
+    "PASSWORD_CHANGED": "تم تغيير كلمة المرور بنجاح"
   },
   "ROLE": {
     "ADMIN": "مدير النظام",

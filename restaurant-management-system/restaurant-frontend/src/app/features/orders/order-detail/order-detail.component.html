@@ -1,57 +1,88 @@
-<app-page-header titleKey="ORDERS.ORDER_DETAIL"></app-page-header>
-<a routerLink="/admin/orders" class="app-back-btn">{{ 'COMMON.BACK' | translate }}</a>
+<div class="app-page order-detail-page">
+  <app-page-header titleKey="ORDERS.ORDER_DETAIL" [subtitle]="order ? ('#' + order.orderNumber) : ''">
+    <rms-icon-btn icon="arrow_back" tooltipKey="COMMON.BACK" routerLink="/admin/orders"></rms-icon-btn>
+    <rms-icon-btn *ngIf="order && nextStatus" icon="arrow_forward" tooltipKey="ORDERS.ADVANCE" variant="primary" [disabled]="processing" (clicked)="advanceStatus()"></rms-icon-btn>
+    <rms-icon-btn *ngIf="order" icon="pause_circle" tooltipKey="ORDERS.HOLD" [disabled]="processing" (clicked)="toggleHold()"></rms-icon-btn>
+    <rms-icon-btn *ngIf="order" icon="payments" tooltipKey="ORDERS.CHECKOUT" variant="gold" [disabled]="processing" (clicked)="checkout()"></rms-icon-btn>
+  </app-page-header>
 
-<div class="card" *ngIf="order as o">
-  <header class="detail-header">
-    <div>
-      <h2>{{ 'ORDERS.ORDER_NUMBER' | translate }}{{ o.orderNumber }}</h2>
-      <p>
-        <span class="badge">{{ o.orderType | enumTranslate:'ORDERS' }}</span>
-        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
-        <span *ngIf="o.held" class="badge held">{{ 'ORDERS.HOLD' | translate }}</span>
-      </p>
-    </div>
-    <div class="actions">
-      <button mat-stroked-button *ngIf="nextStatus" (click)="advanceStatus()" [disabled]="processing">
-        {{ 'ORDERS.ADVANCE' | translate }}
-      </button>
-      <button mat-stroked-button (click)="toggleHold()" [disabled]="processing">
-        {{ 'ORDERS.HOLD' | translate }}
-      </button>
-      <button mat-flat-button color="primary" (click)="checkout()" [disabled]="processing">
-        {{ 'ORDERS.CHECKOUT' | translate }}
-      </button>
-    </div>
-  </header>
+  <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
 
-  <h3>{{ 'ORDERS.ITEMS' | translate }}</h3>
-  <table class="app-data-table" *ngIf="o.items?.length; else noItems">
-    <thead>
-      <tr>
-        <th>{{ 'COMMON.NAME' | translate }}</th>
-        <th>{{ 'COMMON.QUANTITY' | translate }}</th>
-        <th>{{ 'COMMON.PRICE' | translate }}</th>
-        <th>{{ 'COMMON.TOTAL' | translate }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of o.items">
-        <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.unitPrice | number:'1.2-2' }}</td>
-        <td>{{ item.unitPrice * item.quantity | number:'1.2-2' }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <ng-template #noItems><p>{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
+  <div class="app-list-surface" *ngIf="!loading">
+    <ng-container *ngIf="order as o">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--purple">
+        <span class="stat-label">{{ 'ORDERS.ORDER_TYPE' | translate }}</span>
+        <strong class="stat-text">{{ o.orderType | enumTranslate:'ORDERS' }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'COMMON.STATUS' | translate }}</span>
+        <strong class="stat-text">{{ o.status | enumTranslate:'ORDERS' }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'ORDERS.ITEMS' | translate }}</span>
+        <strong>{{ o.items?.length || 0 }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--pink">
+        <span class="stat-label">{{ 'COMMON.GRAND_TOTAL' | translate }}</span>
+        <strong>{{ o.totalAmount | number:'1.2-2' }}</strong>
+      </article>
+    </section>
 
-  <div class="totals">
-    <div *ngIf="o.subtotal != null"><span>{{ 'COMMON.SUBTOTAL' | translate }}</span><span>{{ o.subtotal | number:'1.2-2' }}</span></div>
-    <div *ngIf="o.taxAmount != null"><span>{{ 'COMMON.TAX' | translate }}</span><span>{{ o.taxAmount | number:'1.2-2' }}</span></div>
-    <div *ngIf="o.discountAmount != null"><span>{{ 'COMMON.DISCOUNT' | translate }}</span><span>{{ o.discountAmount | number:'1.2-2' }}</span></div>
-    <div *ngIf="o.serviceCharge != null"><span>{{ 'COMMON.SERVICE_CHARGE' | translate }}</span><span>{{ o.serviceCharge | number:'1.2-2' }}</span></div>
-    <div class="grand"><span>{{ 'COMMON.GRAND_TOTAL' | translate }}</span><span>{{ o.totalAmount | number:'1.2-2' }}</span></div>
+    <section class="app-card table-card">
+      <div class="app-card-header">
+        <span class="app-card-title">{{ 'ORDERS.ITEMS' | translate }}</span>
+        <span class="status-badge" *ngIf="o.held" data-status="PENDING">{{ 'ORDERS.HOLD' | translate }}</span>
+      </div>
+      <div class="app-table-wrap">
+        <table class="app-data-table" *ngIf="o.items?.length; else noItems">
+          <thead>
+            <tr>
+              <th>{{ 'COMMON.NAME' | translate }}</th>
+              <th>{{ 'COMMON.QUANTITY' | translate }}</th>
+              <th>{{ 'COMMON.PRICE' | translate }}</th>
+              <th>{{ 'COMMON.TOTAL' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of o.items">
+              <td>{{ item.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitPrice | number:'1.2-2' }}</td>
+              <td>{{ item.unitPrice * item.quantity | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noItems><p class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p></ng-template>
+
+      <div class="order-totals">
+        <div class="total-row" *ngIf="o.subtotal != null">
+          <span>{{ 'COMMON.SUBTOTAL' | translate }}</span>
+          <strong>{{ o.subtotal | number:'1.2-2' }}</strong>
+        </div>
+        <div class="total-row" *ngIf="o.taxAmount != null">
+          <span>{{ 'COMMON.TAX' | translate }}</span>
+          <strong>{{ o.taxAmount | number:'1.2-2' }}</strong>
+        </div>
+        <div class="total-row" *ngIf="o.discountAmount != null">
+          <span>{{ 'COMMON.DISCOUNT' | translate }}</span>
+          <strong>{{ o.discountAmount | number:'1.2-2' }}</strong>
+        </div>
+        <div class="total-row" *ngIf="o.serviceCharge != null">
+          <span>{{ 'COMMON.SERVICE_CHARGE' | translate }}</span>
+          <strong>{{ o.serviceCharge | number:'1.2-2' }}</strong>
+        </div>
+        <div class="total-row grand">
+          <span>{{ 'COMMON.GRAND_TOTAL' | translate }}</span>
+          <strong>{{ o.totalAmount | number:'1.2-2' }}</strong>
+        </div>
+      </div>
+    </section>
+    </ng-container>
   </div>
-</div>
 
-<div class="card" *ngIf="!order">{{ 'COMMON.NO_DATA' | translate }}</div>
+  <section class="app-card" *ngIf="!order && !loading">
+    <p class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p>
+  </section>
+</div>

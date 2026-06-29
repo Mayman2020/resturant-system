@@ -1,218 +1,61 @@
 import { Component, OnInit } from '@angular/core';
-
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
-
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import { TranslateModule } from '@ngx-translate/core';
-
 import { MatButtonModule } from '@angular/material/button';
-
-import { MatFormFieldModule } from '@angular/material/form-field';
-
-import { MatInputModule } from '@angular/material/input';
-
-import { MatSelectModule } from '@angular/material/select';
-
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-
+import { RmsIconBtnComponent } from '../../../shared/components/rms-icon-btn/rms-icon-btn.component';
 import { InventoryService } from '../../../core/services/inventory.service';
-
 import { BranchContextService } from '../../../core/services/branch-context.service';
-
-import { SnackService } from '../../../core/services/snack.service';
-
+import { RmsDialogService } from '../../../shared/services/rms-dialog.service';
+import { InventoryItemDialogComponent } from '../../../shared/dialogs/inventory-item-dialog.component';
+import { InventoryAdjustDialogComponent } from '../../../shared/dialogs/inventory-adjust-dialog.component';
 import { InventoryItem } from '../../../core/models/restaurant.model';
 
-
-
 @Component({
-
   selector: 'app-inventory-management',
-
   standalone: true,
-
   imports: [
-
-    NgFor, NgIf, DecimalPipe, ReactiveFormsModule, TranslateModule, MatButtonModule,
-
-    MatFormFieldModule, MatInputModule, MatSelectModule, PageHeaderComponent
-
+    NgFor, NgIf, DecimalPipe, TranslateModule, MatButtonModule,
+    PageHeaderComponent, RmsIconBtnComponent
   ],
-
   templateUrl: './inventory-management.component.html',
-
   styleUrl: './inventory-management.component.scss'
-
 })
-
 export class InventoryManagementComponent implements OnInit {
-
   items: InventoryItem[] = [];
-
-  showForm = false;
-
-  showAdjustForm = false;
-
-  form!: FormGroup;
-
-  adjustForm!: FormGroup;
-
-  saving = false;
-
   readonly movementTypes = ['STOCK_IN', 'USAGE', 'WASTE'];
 
-
-
   constructor(
-
     private readonly inventory: InventoryService,
-
     private readonly branchCtx: BranchContextService,
-
-    private readonly snack: SnackService,
-
-    private readonly fb: FormBuilder
-
+    private readonly dialogs: RmsDialogService
   ) {}
 
-
-
   ngOnInit(): void {
-
-    this.form = this.fb.group({
-
-      name: ['', Validators.required],
-
-      unit: ['', Validators.required],
-
-      currentStock: [0],
-
-      minStock: [0]
-
-    });
-
-    this.adjustForm = this.fb.group({
-
-      inventoryItemId: [null, Validators.required],
-
-      movementType: ['STOCK_IN', Validators.required],
-
-      quantity: [1, [Validators.required, Validators.min(0.01)]],
-
-      notes: ['']
-
-    });
-
     this.load();
-
   }
-
-
 
   load(): void {
-
     this.inventory.getAll({ branchId: this.branchCtx.activeBranchId }).subscribe({
-
       next: (r) => { this.items = r.data ?? []; },
-
       error: () => { this.items = []; }
-
     });
-
   }
 
-
-
-  toggleForm(): void {
-
-    this.showForm = !this.showForm;
-
-  }
-
-
-
-  toggleAdjustForm(): void {
-
-    this.showAdjustForm = !this.showAdjustForm;
-
-  }
-
-
-
-  saveItem(): void {
-
-    if (this.form.invalid || this.saving) return;
-
-    this.saving = true;
-
-    const body = { ...this.form.getRawValue(), branchId: this.branchCtx.activeBranchId };
-
-    this.inventory.create(body).subscribe({
-
-      next: () => {
-
-        this.saving = false;
-
-        this.showForm = false;
-
-        this.form.reset({ currentStock: 0, minStock: 0 });
-
-        this.snack.successKey('MESSAGES.SAVED');
-
-        this.load();
-
-      },
-
-      error: (err: Error) => {
-
-        this.saving = false;
-
-        this.snack.error(err.message);
-
-      }
-
+  openAddDialog(): void {
+    this.dialogs.open(InventoryItemDialogComponent, { width: '540px' }).afterClosed().subscribe((ok) => {
+      if (ok) this.load();
     });
-
   }
 
-
-
-  adjustStock(): void {
-
-    if (this.adjustForm.invalid || this.saving) return;
-
-    this.saving = true;
-
-    this.inventory.recordMovement(this.adjustForm.getRawValue()).subscribe({
-
-      next: () => {
-
-        this.saving = false;
-
-        this.showAdjustForm = false;
-
-        this.adjustForm.reset({ movementType: 'STOCK_IN', quantity: 1 });
-
-        this.snack.successKey('MESSAGES.STOCK_ADJUSTED');
-
-        this.load();
-
-      },
-
-      error: (err: Error) => {
-
-        this.saving = false;
-
-        this.snack.error(err.message);
-
-      }
-
+  openAdjustDialog(): void {
+    this.dialogs.open(InventoryAdjustDialogComponent, {
+      width: '540px',
+      data: { items: this.items, movementTypes: this.movementTypes }
+    }).afterClosed().subscribe((ok) => {
+      if (ok) this.load();
     });
-
   }
-
-
 
   isLowStock(item: InventoryItem): boolean {
     const stock = Number(item.currentStock ?? item.quantity ?? 0);
@@ -220,18 +63,15 @@ export class InventoryManagementComponent implements OnInit {
     return stock <= min;
   }
 
+  get lowStockCount(): number {
+    return this.items.filter((i) => this.isLowStock(i)).length;
+  }
+
+  get activeCount(): number {
+    return this.items.filter((i) => !this.isLowStock(i)).length;
+  }
+
   stockLevel(item: InventoryItem): number {
     return Number(item.currentStock ?? item.quantity ?? 0);
   }
-
-
-
-  movementLabel(type: string): string {
-
-    return `INVENTORY.${type}`;
-
-  }
-
 }
-
-

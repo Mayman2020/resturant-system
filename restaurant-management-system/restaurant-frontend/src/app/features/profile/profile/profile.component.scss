@@ -1,0 +1,13 @@
+.profile-form {
+  display: grid;
+  gap: 12px 16px;
+  max-width: 420px;
+}
+
+.profile-info p {
+  margin: 0 0 8px;
+}
+
+.profile-card.highlight {
+  outline: 2px solid var(--accent-gold, #d4a853);
+}

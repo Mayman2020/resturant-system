@@ -1,28 +1,29 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgIf } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { PermissionService } from '../../../core/services/permission.service';
 import { SnackService } from '../../../core/services/snack.service';
-import { I18nService } from '../../../core/i18n/i18n.service';
+import { I18nService, LangCode } from '../../../core/i18n/i18n.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, TranslateModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   loading = false;
   showPassword = false;
+  rememberMe = false;
   form!: FormGroup;
 
   constructor(
@@ -31,13 +32,30 @@ export class LoginComponent {
     private readonly perms: PermissionService,
     private readonly router: Router,
     private readonly snack: SnackService,
-    readonly i18n: I18nService
+    readonly i18n: I18nService,
+    readonly theme: ThemeService
   ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
     if (this.auth.isAuthenticated()) void this.router.navigateByUrl(this.auth.getDashboardRoute());
+  }
+
+  get languages() {
+    return this.i18n.languages;
+  }
+
+  get activeLanguage() {
+    return this.languages.find((l) => l.code === this.i18n.currentLang) ?? this.languages[0];
+  }
+
+  get themeTooltipKey(): string {
+    return this.theme.isDark ? 'TOPBAR.LIGHT_MODE' : 'TOPBAR.DARK_MODE';
+  }
+
+  setLang(code: LangCode): void {
+    this.i18n.setLang(code).subscribe();
   }
 
   submit(): void {
@@ -48,7 +66,10 @@ export class LoginComponent {
     ).subscribe({
       next: () => {
         this.loading = false;
-        void this.router.navigateByUrl(this.auth.getDashboardRoute());
+        const target = this.auth.mustChangePassword()
+          ? '/admin/profile?changePassword=1'
+          : this.auth.getDashboardRoute();
+        void this.router.navigateByUrl(target);
       },
       error: (err: Error & { status?: number }) => {
         this.loading = false;

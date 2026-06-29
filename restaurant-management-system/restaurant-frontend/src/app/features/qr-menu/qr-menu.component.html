@@ -1,28 +1,64 @@
-<div class="qr-menu">
-  <header class="hero">
-    <h1>{{ 'QR.TITLE' | translate }}</h1>
-    <p>{{ 'QR.BROWSE' | translate }}</p>
-    <p *ngIf="menu?.tableNumber">{{ 'QR.TABLE' | translate }}: {{ menu?.tableNumber }}</p>
-  </header>
+<div class="qr-menu-page">
+  <div class="qr-bg"></div>
 
-  <p *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</p>
-  <p *ngIf="error && !loading">{{ 'COMMON.NO_DATA' | translate }}</p>
+  <div class="qr-shell">
+    <header class="qr-hero app-card">
+      <img src="assets/brand/logo-mark.svg" alt="" width="56" height="56" class="qr-logo">
+      <div>
+        <h1>{{ 'QR.TITLE' | translate }}</h1>
+        <p>{{ 'QR.BROWSE' | translate }}</p>
+        <p class="qr-table" *ngIf="menu?.tableNumber">{{ 'QR.TABLE' | translate }}: {{ menu?.tableNumber }}</p>
+      </div>
+    </header>
 
-  <ng-container *ngIf="menu && !loading">
-    <nav class="categories">
-      <button *ngFor="let c of menu.categories"
-        [class.active]="c.id === selectedCategoryId"
-        (click)="selectCategory(c)">
-        {{ c | localizedName }}
-      </button>
-    </nav>
+    <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
 
-    <section class="items">
-      <article class="item-card" *ngFor="let item of itemsForCategory(selectedCategoryId)">
-        <h3>{{ item | localizedName }}</h3>
-        <span class="price">{{ item.price | number:'1.2-2' }}</span>
-      </article>
-      <p *ngIf="!itemsForCategory(selectedCategoryId).length" class="empty">{{ 'COMMON.NO_DATA' | translate }}</p>
-    </section>
-  </ng-container>
+    <p class="empty-state" *ngIf="error && !loading">{{ 'COMMON.NO_DATA' | translate }}</p>
+
+    <div class="app-list-surface" *ngIf="menu && !loading">
+      <section class="list-stats">
+        <article class="stat-pill stat-pill--purple">
+          <span class="stat-label">{{ 'MENU.CATEGORIES' | translate }}</span>
+          <strong>{{ menu.categories.length }}</strong>
+        </article>
+        <article class="stat-pill stat-pill--cyan">
+          <span class="stat-label">{{ 'MENU.ITEMS' | translate }}</span>
+          <strong>{{ menu.items.length }}</strong>
+        </article>
+      </section>
+
+      <section class="app-card table-card">
+        <div class="estate-table-toolbar">
+          <div class="estate-filter-tray">
+            <div class="estate-filter-row">
+              <button type="button" class="estate-filter-btn" *ngFor="let c of menu.categories"
+                [class.active]="c.id === selectedCategoryId" (click)="selectCategory(c)">
+                {{ c | localizedName }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card-grid qr-items-grid">
+          <article class="entity-card qr-item-card" *ngFor="let item of itemsForCategory(selectedCategoryId)">
+            <div class="entity-card__head">
+              <div class="entity-card__avatar">
+                <span class="material-icons">restaurant</span>
+              </div>
+              <div class="entity-card__meta">
+                <h3 class="entity-card__name">{{ item | localizedName }}</h3>
+              </div>
+            </div>
+            <div class="entity-card__body">
+              <div class="entity-card__row">
+                <span>{{ 'MENU.PRICE' | translate }}</span>
+                <strong>{{ item.price | number:'1.2-2' }}</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+        <p *ngIf="!itemsForCategory(selectedCategoryId).length" class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</p>
+      </section>
+    </div>
+  </div>
 </div>

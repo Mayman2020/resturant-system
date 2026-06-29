@@ -1,0 +1,433 @@
+/* RMS Estate Card System — Property_Managments contracts pattern (dark SF Restro) */
+
+.page-shell,
+.app-page {
+  padding: var(--content-pad-block) var(--content-pad-inline) 48px;
+  min-height: calc(100vh - var(--topbar-height, 76px));
+  width: 100%;
+  max-width: var(--content-max-w);
+  margin-inline: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: start;
+}
+
+.app-page-eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--purple-light);
+}
+
+.app-list-surface {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+
+  &.is-refreshing {
+    pointer-events: none;
+    opacity: 0.72;
+  }
+}
+
+.list-stats,
+.contracts-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.stat-pill {
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(26, 26, 40, 0.95) 0%, var(--bg-card) 55%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 32px rgba(0, 0, 0, 0.28);
+  transition: border-color var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    border-color: rgba(139, 92, 246, 0.28);
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 16px 36px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.stat-pill .stat-label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  font-weight: 700;
+}
+
+.stat-pill strong {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  line-height: 1;
+  color: var(--ink-900);
+  font-weight: 600;
+}
+
+.stat-pill--gold strong { color: var(--gold-light); }
+
+.stat-pill--purple strong { color: var(--purple-light); }
+.stat-pill--pink strong { color: var(--pink); }
+.stat-pill--orange strong { color: var(--orange); }
+.stat-pill--cyan strong { color: var(--cyan); }
+
+.estate-card,
+.app-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 14px 40px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+
+.app-card.table-card,
+.estate-card.table-card,
+.estate-card.directory-table-card {
+  animation: rmsFadeUp var(--t-med) var(--e-out) both;
+}
+
+@keyframes rmsFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.estate-table-toolbar {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  border-bottom: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+}
+
+.estate-table-toolbar .toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.estate-search-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 220px;
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: var(--bg-input);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+
+  &:focus-within {
+    border-color: rgba(139, 92, 246, 0.45);
+    box-shadow: 0 0 0 3px var(--purple-soft);
+  }
+
+  .material-icons {
+    color: var(--purple);
+    font-size: 20px;
+  }
+
+  input {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink-900);
+    font-size: 13.5px;
+    font-family: inherit;
+  }
+}
+
+.estate-filter-tray {
+  margin: 0 4px 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.estate-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px 10px;
+}
+
+.estate-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  min-height: 36px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-input);
+  color: var(--ink-500);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover:not(.active) {
+    border-color: rgba(139, 92, 246, 0.3);
+    color: var(--ink-700);
+    background: var(--bg-card-hover);
+  }
+
+  &.active {
+    background: var(--accent-gradient);
+    color: var(--text-on-accent);
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(30, 58, 95, 0.22);
+  }
+}
+
+/* Employee / entity cards (staff roster) */
+.staff-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.app-card .empty-state,
+.table-card .empty-state {
+  padding: 28px 18px;
+  text-align: center;
+}
+
+.entity-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(160deg, rgba(26, 26, 40, 0.6), var(--bg-card));
+  transition: border-color var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    border-color: rgba(139, 92, 246, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.entity-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.entity-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-on-accent);
+  background: var(--accent-gradient);
+  flex-shrink: 0;
+}
+
+.entity-card__meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.entity-card__name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entity-card__sub {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-500);
+}
+
+.entity-card__body {
+  display: grid;
+  gap: 8px;
+}
+
+.entity-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--ink-500);
+
+  strong {
+    color: var(--ink-700);
+    font-weight: 500;
+  }
+}
+
+.role-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--purple-soft);
+  color: var(--purple-light);
+}
+
+.role-chip[data-role='ADMIN'],
+.role-chip[data-role='MANAGER'] {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+}
+
+.role-chip[data-role='KITCHEN_STAFF'] {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.role-chip[data-role='WAITER'],
+.role-chip[data-role='CASHIER'] {
+  background: var(--cyan-soft);
+  color: var(--cyan);
+}
+
+.role-chip[data-role='DELIVERY_DRIVER'] {
+  background: var(--pink-soft);
+  color: var(--pink);
+}
+
+.entity-card.is-inactive {
+  opacity: 0.55;
+}
+
+@media (max-width: 768px) {
+  .page-shell,
+  .app-page {
+    padding: 20px 16px 32px;
+    gap: 16px;
+  }
+
+  .staff-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Light theme — estate cards harmonized with navy/gold shell */
+html.light-theme,
+.light-theme {
+  .app-page-eyebrow {
+    color: var(--gold-dark);
+  }
+
+  .stat-pill {
+    border-color: var(--line);
+    background: linear-gradient(165deg, #ffffff 0%, var(--paper-3) 100%);
+    box-shadow: var(--glow-card);
+
+    &:hover {
+      border-color: rgba(30, 58, 95, 0.18);
+      box-shadow: var(--shadow-hover);
+    }
+  }
+
+  .estate-card,
+  .app-card {
+    border-color: var(--line);
+    box-shadow: var(--glow-card);
+  }
+
+  .entity-card {
+    border-color: var(--line);
+    background: linear-gradient(160deg, #ffffff, var(--paper-3));
+    box-shadow: var(--glow-card);
+
+    &:hover {
+      border-color: rgba(30, 58, 95, 0.2);
+      box-shadow: var(--shadow-hover);
+    }
+  }
+
+  .estate-search-inline {
+    border-color: var(--line);
+    background: var(--bg-input);
+
+    &:focus-within {
+      border-color: rgba(30, 58, 95, 0.35);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .material-icons {
+      color: var(--brand-navy);
+    }
+  }
+
+  .estate-filter-tray {
+    background: var(--paper-3);
+    border-color: var(--line);
+  }
+
+  .estate-filter-btn {
+    border-color: var(--line);
+    background: var(--bg-card);
+    color: var(--ink-500);
+
+    &:hover:not(.active) {
+      border-color: rgba(30, 58, 95, 0.22);
+      color: var(--ink-700);
+    }
+
+    &.active {
+      box-shadow: 0 4px 14px rgba(30, 58, 95, 0.18);
+    }
+  }
+
+  .estate-table-toolbar {
+    background: linear-gradient(180deg, var(--paper-3), transparent);
+  }
+
+  .role-chip[data-role='ADMIN'],
+  .role-chip[data-role='MANAGER'] {
+    background: var(--accent-soft);
+    color: var(--brand-navy);
+  }
+}

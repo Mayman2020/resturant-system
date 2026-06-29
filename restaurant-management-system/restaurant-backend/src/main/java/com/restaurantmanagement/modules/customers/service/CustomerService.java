@@ -13,7 +13,10 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final AppMessages appMessages;
     public Page<CustomerResponse> list(String q, Pageable pageable) {
-        return customerRepository.search(q, pageable).map(CustomerMapper::toResponse);
+        Page<Customer> page = (q == null || q.isBlank())
+                ? customerRepository.findAll(pageable)
+                : customerRepository.searchFiltered(q.trim(), pageable);
+        return page.map(CustomerMapper::toResponse);
     }
     public CustomerResponse getById(Long id) { return CustomerMapper.toResponse(find(id)); }
     @Transactional public CustomerResponse create(CustomerRequest req) {

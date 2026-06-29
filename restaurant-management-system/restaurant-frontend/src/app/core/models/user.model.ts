@@ -1,6 +1,6 @@
 export type UserRole = 'ADMIN' | 'MANAGER' | 'CASHIER' | 'WAITER' | 'KITCHEN_STAFF' | 'DELIVERY_DRIVER';
+export const USER_ROLE_VALUES: UserRole[] = ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN_STAFF', 'DELIVERY_DRIVER'];
 export type PermissionAction = 'view' | 'create' | 'edit' | 'delete' | 'menu';
-
 export interface ModulePermission {
   enabled?: boolean;
   view?: boolean;
@@ -21,6 +21,13 @@ export interface UserDto {
   branchId?: number;
   permissions?: PermissionMap;
   mustChangePassword?: boolean;
+}
+
+export interface StaffMember extends UserDto {
+  phone?: string;
+  active?: boolean;
+  lastLogin?: string;
+  createdAt?: string;
 }
 
 export interface CurrentUser extends UserDto {

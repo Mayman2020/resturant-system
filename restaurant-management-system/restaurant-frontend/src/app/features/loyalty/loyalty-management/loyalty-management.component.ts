@@ -2,23 +2,19 @@ import { Component, OnInit } from '@angular/core';
 
 import { NgFor, NgIf } from '@angular/common';
 
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import { TranslateModule } from '@ngx-translate/core';
-
-import { MatTabsModule } from '@angular/material/tabs';
 
 import { MatButtonModule } from '@angular/material/button';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-
-import { MatInputModule } from '@angular/material/input';
-
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+
+import { RmsIconBtnComponent } from '../../../shared/components/rms-icon-btn/rms-icon-btn.component';
 
 import { LoyaltyService } from '../../../core/services/loyalty.service';
 
-import { SnackService } from '../../../core/services/snack.service';
+import { RmsDialogService } from '../../../shared/services/rms-dialog.service';
+
+import { CouponFormDialogComponent } from '../../../shared/dialogs/coupon-form-dialog.component';
 
 import { Coupon } from '../../../core/models/restaurant.model';
 
@@ -32,9 +28,7 @@ import { Coupon } from '../../../core/models/restaurant.model';
 
   imports: [
 
-    NgFor, NgIf, ReactiveFormsModule, TranslateModule, MatTabsModule,
-
-    MatButtonModule, MatFormFieldModule, MatInputModule, PageHeaderComponent
+    NgFor, NgIf, TranslateModule, MatButtonModule, PageHeaderComponent, RmsIconBtnComponent
 
   ],
 
@@ -48,38 +42,19 @@ export class LoyaltyManagementComponent implements OnInit {
 
   coupons: Coupon[] = [];
 
-  showCouponForm = false;
-
-  couponForm!: FormGroup;
-
-  saving = false;
-
 
 
   constructor(
 
     private readonly loyalty: LoyaltyService,
 
-    private readonly snack: SnackService,
-
-    private readonly fb: FormBuilder
+    private readonly dialogs: RmsDialogService
 
   ) {}
 
 
 
   ngOnInit(): void {
-
-    this.couponForm = this.fb.group({
-
-      code: ['', Validators.required],
-
-      description: [''],
-
-      discountType: ['PERCENT', Validators.required],
-      discountValue: [0, Validators.required]
-
-    });
 
     this.loadCoupons();
 
@@ -101,48 +76,25 @@ export class LoyaltyManagementComponent implements OnInit {
 
 
 
-  toggleCouponForm(): void {
+  get activeCouponsCount(): number {
 
-    this.showCouponForm = !this.showCouponForm;
+    return this.coupons.filter((c) => c.active !== false).length;
 
   }
 
 
 
-  saveCoupon(): void {
+  openCouponDialog(): void {
 
-    if (this.couponForm.invalid || this.saving) return;
+    this.dialogs.open(CouponFormDialogComponent, { width: '520px' }).afterClosed().subscribe((ok) => {
 
-    this.saving = true;
-
-    this.loyalty.createCoupon(this.couponForm.getRawValue()).subscribe({
-
-      next: () => {
-
-        this.saving = false;
-
-        this.showCouponForm = false;
-
-        this.couponForm.reset({ discountType: 'PERCENT', discountValue: 0 });
-
-        this.snack.successKey('MESSAGES.SAVED');
-
-        this.loadCoupons();
-
-      },
-
-      error: (err: Error) => {
-
-        this.saving = false;
-
-        this.snack.error(err.message);
-
-      }
+      if (ok) this.loadCoupons();
 
     });
 
   }
 
 }
+
 
 

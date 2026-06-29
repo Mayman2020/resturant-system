@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    @Query("SELECT c FROM Customer c WHERE :q IS NULL OR LOWER(c.fullName) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(c.email) LIKE LOWER(CONCAT('%', :q, '%')) OR c.phone LIKE CONCAT('%', :q, '%')")
-    Page<Customer> search(@Param("q") String q, Pageable pageable);
+    @Query("SELECT c FROM Customer c WHERE LOWER(c.fullName) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(COALESCE(c.email, '')) LIKE LOWER(CONCAT('%', :q, '%')) OR COALESCE(c.phone, '') LIKE CONCAT('%', :q, '%')")
+    Page<Customer> searchFiltered(@Param("q") String q, Pageable pageable);
 }

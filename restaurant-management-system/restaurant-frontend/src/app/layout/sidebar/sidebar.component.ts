@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { PermissionService } from '../../core/services/permission.service';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 import { UserRole } from '../../core/models/user.model';
 
 interface NavItem {
@@ -14,11 +15,7 @@ interface NavItem {
   route: string;
   permissionKey: string;
   roles: UserRole[];
-}
-
-interface NavSection {
-  labelKey: string;
-  items: NavItem[];
+  tone: string;
 }
 
 @Component({
@@ -28,60 +25,53 @@ interface NavSection {
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   @Input() collapsed = false;
-  @Input() lang: 'ar' | 'en' = 'ar';
   @Output() collapseToggle = new EventEmitter<void>();
 
+  items: NavItem[] = [];
+
   private readonly navItems: NavItem[] = [
-    { icon: 'dashboard', labelKey: 'NAV.DASHBOARD', route: '/admin/dashboard', permissionKey: 'dashboard', roles: ['ADMIN', 'MANAGER', 'CASHIER'] },
-    { icon: 'point_of_sale', labelKey: 'NAV.POS', route: '/admin/pos', permissionKey: 'pos', roles: ['ADMIN', 'MANAGER', 'CASHIER'] },
-    { icon: 'restaurant_menu', labelKey: 'NAV.MENU', route: '/admin/menu', permissionKey: 'menu', roles: ['ADMIN', 'MANAGER', 'WAITER'] },
-    { icon: 'receipt_long', labelKey: 'NAV.ORDERS', route: '/admin/orders', permissionKey: 'orders', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER'] },
-    { icon: 'skillet', labelKey: 'NAV.KITCHEN', route: '/admin/kitchen', permissionKey: 'kitchen', roles: ['ADMIN', 'MANAGER', 'KITCHEN_STAFF'] },
-    { icon: 'table_restaurant', labelKey: 'NAV.TABLES', route: '/admin/tables', permissionKey: 'tables', roles: ['ADMIN', 'MANAGER', 'WAITER'] },
-    { icon: 'delivery_dining', labelKey: 'NAV.DELIVERY', route: '/admin/delivery', permissionKey: 'delivery', roles: ['ADMIN', 'MANAGER', 'DELIVERY_DRIVER'] },
-    { icon: 'groups', labelKey: 'NAV.CUSTOMERS', route: '/admin/customers', permissionKey: 'customers', roles: ['ADMIN', 'MANAGER', 'CASHIER'] },
-    { icon: 'loyalty', labelKey: 'NAV.LOYALTY', route: '/admin/loyalty', permissionKey: 'loyalty', roles: ['ADMIN', 'MANAGER'] },
-    { icon: 'inventory_2', labelKey: 'NAV.INVENTORY', route: '/admin/inventory', permissionKey: 'inventory', roles: ['ADMIN', 'MANAGER'] },
-    { icon: 'bar_chart', labelKey: 'NAV.REPORTS', route: '/admin/reports', permissionKey: 'reports', roles: ['ADMIN', 'MANAGER'] },
-    { icon: 'settings', labelKey: 'NAV.SETTINGS', route: '/admin/settings', permissionKey: 'settings', roles: ['ADMIN', 'MANAGER'] }
+    { icon: 'dashboard', labelKey: 'NAV.DASHBOARD', route: '/admin/dashboard', permissionKey: 'dashboard', roles: ['ADMIN', 'MANAGER', 'CASHIER'], tone: 'purple' },
+    { icon: 'point_of_sale', labelKey: 'NAV.POS', route: '/admin/pos', permissionKey: 'pos', roles: ['ADMIN', 'MANAGER', 'CASHIER'], tone: 'orange' },
+    { icon: 'receipt_long', labelKey: 'NAV.ORDERS', route: '/admin/orders', permissionKey: 'orders', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER'], tone: 'cyan' },
+    { icon: 'skillet', labelKey: 'NAV.KITCHEN', route: '/admin/kitchen', permissionKey: 'kitchen', roles: ['ADMIN', 'MANAGER', 'KITCHEN_STAFF'], tone: 'rose' },
+    { icon: 'table_restaurant', labelKey: 'NAV.TABLES', route: '/admin/tables', permissionKey: 'tables', roles: ['ADMIN', 'MANAGER', 'WAITER'], tone: 'green' },
+    { icon: 'local_shipping', labelKey: 'NAV.DELIVERY', route: '/admin/delivery', permissionKey: 'delivery', roles: ['ADMIN', 'MANAGER', 'CASHIER'], tone: 'cyan' },
+    { icon: 'groups', labelKey: 'NAV.CUSTOMERS', route: '/admin/customers', permissionKey: 'customers', roles: ['ADMIN', 'MANAGER', 'CASHIER'], tone: 'indigo' },
+    { icon: 'card_giftcard', labelKey: 'NAV.LOYALTY', route: '/admin/loyalty', permissionKey: 'loyalty', roles: ['ADMIN', 'MANAGER'], tone: 'pink' },
+    { icon: 'restaurant_menu', labelKey: 'NAV.MENU', route: '/admin/menu', permissionKey: 'menu', roles: ['ADMIN', 'MANAGER', 'WAITER'], tone: 'gold' },
+    { icon: 'inventory_2', labelKey: 'NAV.INVENTORY', route: '/admin/inventory', permissionKey: 'inventory', roles: ['ADMIN', 'MANAGER'], tone: 'teal' },
+    { icon: 'badge', labelKey: 'NAV.USERS', route: '/admin/users', permissionKey: 'users', roles: ['ADMIN', 'MANAGER'], tone: 'slate' },
+    { icon: 'admin_panel_settings', labelKey: 'NAV.PERMISSIONS', route: '/admin/permissions', permissionKey: 'settings', roles: ['ADMIN'], tone: 'gold' },
+    { icon: 'analytics', labelKey: 'NAV.ANALYTICS', route: '/admin/reports', permissionKey: 'reports', roles: ['ADMIN', 'MANAGER'], tone: 'purple' },
+    { icon: 'notifications', labelKey: 'NAV.NOTIFICATIONS', route: '/admin/notifications', permissionKey: 'dashboard', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN_STAFF'], tone: 'rose' },
+    { icon: 'settings', labelKey: 'NAV.SETTINGS', route: '/admin/settings', permissionKey: 'settings', roles: ['ADMIN', 'MANAGER'], tone: 'slate' },
+    { icon: 'list_alt', labelKey: 'NAV.LOOKUPS', route: '/admin/lookups', permissionKey: 'settings', roles: ['ADMIN', 'MANAGER'], tone: 'gold' }
   ];
 
-  private readonly sectionMap: Record<string, string> = {
-    dashboard: 'NAV_SECTION.OVERVIEW',
-    pos: 'NAV_SECTION.OPERATIONS',
-    menu: 'NAV_SECTION.OPERATIONS',
-    orders: 'NAV_SECTION.OPERATIONS',
-    kitchen: 'NAV_SECTION.OPERATIONS',
-    tables: 'NAV_SECTION.OPERATIONS',
-    delivery: 'NAV_SECTION.OPERATIONS',
-    customers: 'NAV_SECTION.MANAGEMENT',
-    loyalty: 'NAV_SECTION.MANAGEMENT',
-    inventory: 'NAV_SECTION.MANAGEMENT',
-    reports: 'NAV_SECTION.ANALYTICS',
-    settings: 'NAV_SECTION.SYSTEM'
-  };
+  constructor(
+    readonly auth: AuthService,
+    private readonly perms: PermissionService,
+    private readonly navHistory: NavigationHistoryService
+  ) {}
 
-  constructor(readonly auth: AuthService, private readonly perms: PermissionService) {}
-
-  get visibleItems(): NavItem[] {
+  ngOnInit(): void {
     const role = this.auth.getRole();
-    return role ? this.navItems.filter(i => i.roles.includes(role) && this.perms.can(i.permissionKey, 'view')) : [];
+    this.items = role
+      ? this.navItems.filter((i) => i.roles.includes(role) && this.perms.can(i.permissionKey, 'view'))
+      : [];
   }
 
-  get sections(): NavSection[] {
-    const items = this.visibleItems;
-    const grouped = new Map<string, NavItem[]>();
-    for (const item of items) {
-      const key = this.sectionMap[item.permissionKey] ?? 'NAV_SECTION.OPERATIONS';
-      if (!grouped.has(key)) grouped.set(key, []);
-      grouped.get(key)!.push(item);
-    }
-    return Array.from(grouped.entries()).map(([labelKey, sectionItems]) => ({ labelKey, items: sectionItems }));
+  trackItem(_index: number, item: NavItem): string {
+    return item.route;
   }
 
   logout(): void {
     this.auth.logout();
+  }
+
+  onMenuNav(): void {
+    this.navHistory.markFromMenu();
   }
 }

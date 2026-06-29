@@ -29,8 +29,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
-    @Query("SELECT u FROM User u JOIN u.role r WHERE (:q IS NULL OR LOWER(u.fullName) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(u.username) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :q, '%'))) AND (:roleType IS NULL OR r.name = :roleType)")
-    Page<User> search(@Param("q") String q, @Param("roleType") RoleType roleType, Pageable pageable);
+    @Query("SELECT u FROM User u JOIN u.role r WHERE (LOWER(u.fullName) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(u.username) LIKE LOWER(CONCAT('%', :q, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :q, '%'))) AND (:roleType IS NULL OR r.name = :roleType)")
+    Page<User> searchFiltered(@Param("q") String q, @Param("roleType") RoleType roleType, Pageable pageable);
+
+    @Query("SELECT u FROM User u JOIN u.role r WHERE (:roleType IS NULL OR r.name = :roleType)")
+    Page<User> findByRole(@Param("roleType") RoleType roleType, Pageable pageable);
 
     long countByBranchIdAndActiveTrue(Long branchId);
 

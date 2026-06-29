@@ -1,0 +1,108 @@
+/* RMS Typography — IBM Plex Arabic (AR) + Inter (EN/numbers) */
+
+:root {
+  --font-latin: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', system-ui, sans-serif;
+  --font-ui: var(--font-latin);
+  --font-display: var(--font-latin);
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.65;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html[dir='rtl'] {
+  --font-ui: var(--font-arabic);
+  --font-display: var(--font-arabic);
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: 400;
+}
+
+/* Headings — no tight tracking in Arabic */
+h1, h2, h3, .dash-header h1, .app-page-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+
+html[dir='ltr'] h1,
+html[dir='ltr'] .dash-header h1 {
+  letter-spacing: -0.025em;
+}
+
+html[dir='rtl'] h1,
+html[dir='rtl'] h2,
+html[dir='rtl'] h3,
+html[dir='rtl'] .dash-header h1,
+html[dir='rtl'] .kpi-label,
+html[dir='rtl'] .kitchen-col-head {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Numbers & KPIs — always Western digits, clean tabular */
+.kpi-value,
+.top-item-qty,
+.estate-stat-value,
+.floor-table .table-num,
+.mat-mdc-form-field input,
+input[type='number'] {
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: 'lnum' 1, 'tnum' 1;
+}
+
+html[dir='rtl'] .kpi-value,
+html[dir='rtl'] .top-item-qty {
+  font-family: var(--font-latin);
+  font-weight: 600;
+}
+
+/* Material buttons & nav */
+.nav-item,
+.mat-mdc-button,
+.mat-mdc-unelevated-button {
+  font-family: var(--font-ui) !important;
+  font-weight: 500 !important;
+}
+
+.brand-name,
+.user-btn {
+  font-weight: 600;
+}
+
+.glass-card-head h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.card-meta,
+.kpi-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+html[dir='ltr'] .kpi-label {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--text-xs);
+}

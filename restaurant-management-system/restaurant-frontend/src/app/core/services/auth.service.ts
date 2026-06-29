@@ -60,6 +60,11 @@ export class AuthService {
   isAdmin(): boolean { return this.getRole() === 'ADMIN' || this.getRole() === 'MANAGER'; }
   getDashboardRoute(): string { return '/admin/dashboard'; }
   mustChangePassword(): boolean { return this.getCurrentUser()?.mustChangePassword === true; }
+  clearMustChangePassword(): void {
+    const u = this.getCurrentUser();
+    if (u) this.tokenStorage.setUser({ ...u, mustChangePassword: false });
+  }
+  hasRole(role: UserRole): boolean { return this.getRole() === role; }
   clearExpiredTokens(): void {
     const t = this.tokenStorage.getToken();
     if (t && JwtUtils.isExpired(t)) this.tokenStorage.clearAll();

@@ -35,24 +35,21 @@ export class ThemeService {
   private readInitial(): ThemeMode {
     const saved = localStorage.getItem(AppConstants.PERSISTED_KEYS.THEME) as ThemeMode | null;
     if (saved === 'dark' || saved === 'light') return saved;
-    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
+    return 'dark';
   }
 
   private apply(mode: ThemeMode): void {
-    const el = document.documentElement;
-    const overlay = this.overlay.getContainerElement();
-    const body = document.body;
-    if (mode === 'dark') {
-      el.classList.add('dark-theme');
-      overlay.classList.add('dark-theme');
-      body.classList.add('dark-theme');
-    } else {
-      el.classList.remove('dark-theme');
-      overlay.classList.remove('dark-theme');
-      body.classList.remove('dark-theme');
+    const isDark = mode === 'dark';
+    document.documentElement.classList.toggle('dark-theme', isDark);
+    document.documentElement.classList.toggle('light-theme', !isDark);
+    document.body.classList.toggle('dark-theme', isDark);
+    document.body.classList.toggle('light-theme', !isDark);
+    try {
+      const overlayEl = this.overlay.getContainerElement();
+      overlayEl.classList.toggle('dark-theme', isDark);
+      overlayEl.classList.toggle('light-theme', !isDark);
+    } catch {
+      /* overlay container not ready during bootstrap */
     }
   }
 }

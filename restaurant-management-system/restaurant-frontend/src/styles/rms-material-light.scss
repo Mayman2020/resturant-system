@@ -1,0 +1,75 @@
+/* RMS Material — light theme surfaces */
+
+html.light-theme,
+.light-theme {
+  color-scheme: light;
+
+  .mat-mdc-form-field {
+    --mdc-outlined-text-field-input-text-color: var(--ink-900);
+    --mdc-outlined-text-field-label-text-color: var(--ink-500);
+    --mdc-outlined-text-field-hover-label-text-color: var(--ink-700);
+    --mdc-outlined-text-field-focus-label-text-color: var(--brand-navy);
+    --mdc-outlined-text-field-outline-color: rgba(30, 58, 95, 0.18);
+    --mdc-outlined-text-field-hover-outline-color: rgba(30, 58, 95, 0.28);
+    --mdc-outlined-text-field-focus-outline-color: var(--brand-navy);
+    --mat-select-enabled-trigger-text-color: var(--ink-900);
+    --mat-select-enabled-arrow-color: var(--ink-500);
+    --mat-select-focused-arrow-color: var(--brand-navy);
+  }
+
+  .mat-mdc-outlined-button:not(:disabled) {
+    --mdc-outlined-button-label-text-color: var(--brand-navy);
+    --mdc-outlined-button-outline-color: rgba(30, 58, 95, 0.22);
+  }
+
+  .mat-mdc-outlined-button:not(:disabled):hover {
+    --mdc-outlined-button-label-text-color: var(--brand-navy-dark);
+    --mdc-outlined-button-outline-color: rgba(30, 58, 95, 0.35);
+    background: var(--accent-soft);
+  }
+
+  .mat-mdc-button:not(:disabled),
+  .mat-mdc-icon-button:not(:disabled) {
+    --mdc-text-button-label-text-color: var(--ink-700);
+    --mat-icon-button-icon-color: var(--ink-700);
+  }
+
+  .mat-mdc-tab-group {
+    --mat-tab-header-inactive-label-text-color: var(--ink-500);
+    --mat-tab-header-active-label-text-color: var(--ink-900);
+    --mat-tab-header-active-focus-label-text-color: var(--ink-900);
+    --mat-tab-header-active-hover-label-text-color: var(--ink-900);
+    --mat-tab-header-inactive-focus-label-text-color: var(--ink-700);
+    --mat-tab-header-inactive-hover-label-text-color: var(--ink-700);
+    --mdc-tab-indicator-active-indicator-color: var(--brand-navy);
+  }
+
+  .mat-mdc-select-panel,
+  .mat-mdc-autocomplete-panel,
+  .mat-mdc-menu-panel {
+    background: var(--surface) !important;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .mat-mdc-option,
+  .mat-mdc-menu-item {
+    color: var(--ink-700) !important;
+  }
+
+  .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+  .mat-mdc-option.mat-mdc-option-active {
+    background: var(--accent-soft) !important;
+  }
+
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+    background: var(--accent-soft) !important;
+    color: var(--ink-900) !important;
+  }
+
+  .mat-mdc-tooltip .mdc-tooltip__surface {
+    background: var(--surface);
+    color: var(--ink-900);
+    border: 1px solid var(--line);
+  }
+}

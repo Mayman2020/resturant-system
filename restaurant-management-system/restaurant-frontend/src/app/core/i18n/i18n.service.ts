@@ -4,7 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AppConstants } from '../constants/app-constants';
-import { ARABIC_LATIN_DIGITS_LANG, formatCurrencyLatin, formatDateTimeLatin, formatNumberLatin, toLatinDigits as toLatinDigitsFn } from './locale-format';
+import {
+  ARABIC_LATIN_DIGITS_LANG,
+  formatCurrencyLatin,
+  formatDateLatin,
+  formatDateTimeLatin,
+  formatNumberLatin,
+  toLatinDigits as toLatinDigitsFn
+} from './locale-format';
 
 export type LangCode = 'ar' | 'en';
 export type Direction = 'rtl' | 'ltr';
@@ -33,6 +40,9 @@ export class I18nService {
   instant(key: string, params?: Record<string, unknown>): string { return this.translate.instant(key, params); }
   formatNumber(v: number | null | undefined, o?: Intl.NumberFormatOptions): string { return formatNumberLatin(v, o); }
   formatCurrency(v: number | null | undefined, c = 'SAR'): string { return formatCurrencyLatin(v, c); }
+  formatDate(v: Date | string | number | null | undefined): string {
+    return formatDateLatin(v, this.currentLang);
+  }
   formatDateTime(v: Date | string | number | null | undefined, o?: Intl.DateTimeFormatOptions): string {
     return formatDateTimeLatin(v, o, this.currentLang);
   }
@@ -43,7 +53,11 @@ export class I18nService {
     document.documentElement.setAttribute('dir', lang.dir);
     document.documentElement.setAttribute('lang', htmlLang);
     document.body.setAttribute('dir', lang.dir);
-    this.overlay.getContainerElement().setAttribute('dir', lang.dir);
+    try {
+      this.overlay.getContainerElement().setAttribute('dir', lang.dir);
+    } catch {
+      /* overlay container not ready during bootstrap */
+    }
   }
   private readSaved(): LangCode {
     const s = localStorage.getItem(AppConstants.PERSISTED_KEYS.LANG);

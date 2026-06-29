@@ -1,0 +1,39 @@
+.permissions-page .perm-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.perm-header,
+.perm-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) repeat(4, 72px);
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.perm-header {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.module-name {
+  font-weight: 500;
+}
+
+.role-field-wrap {
+  padding: 0 16px 12px;
+}
+
+.permissions-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}

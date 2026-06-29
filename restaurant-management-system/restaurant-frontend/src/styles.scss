@@ -1,4 +1,22 @@
 @import 'styles/restaurant-os-tokens';
+@import 'styles/typography';
+@import 'styles/platform-os-globals';
+@import 'styles/layout/app-shell';
+@import 'styles/sf-restro-dashboard';
+@import 'styles/rms-estate-cards';
+@import 'styles/pages/list-pages';
+@import 'styles/admin.filters';
+@import 'styles/page-ui';
+@import 'styles/rms-premium-shell';
+@import 'styles/rms-material-dark';
+@import 'styles/rms-material-light';
+@import 'styles/rms-theme-contrast';
+@import 'styles/rms-dialog';
+
+html[dir='rtl'] {
+  --font-ui: var(--font-arabic);
+  --font-display: var(--font-arabic);
+}
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -6,98 +24,33 @@ html, body {
   height: 100%;
   margin: 0;
   font-family: var(--font-ui);
-  background: var(--paper);
+  font-size: 15px;
+  background: var(--bg-app);
   color: var(--ink-900);
-  transition: background-color var(--t-med) var(--e-out), color var(--t-med) var(--e-out);
+  -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--accent); text-decoration: none; }
+html[dir='rtl'] body { font-family: var(--font-arabic); }
 
-.page-shell { padding: 24px; }
+a { color: var(--text-link); text-decoration: none; }
 
-:root {
-  --pad-card: 16px;
-}
-
-.card {
-  background: var(--surface);
+.estate-card,
+.sf-card,
+.glass-card {
+  background: var(--bg-card);
   border: 1px solid var(--line);
-  border-radius: var(--r);
-  padding: var(--pad-card);
-  transition: background-color var(--t-med) var(--e-out), border-color var(--t-med) var(--e-out);
+  border-radius: var(--r-lg);
 }
 
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.mat-mdc-unelevated-button:not(:disabled),
+.mat-mdc-raised-button:not(:disabled) {
+  background: var(--accent-gradient) !important;
+  color: var(--text-on-accent) !important;
+  border-radius: var(--r-sm) !important;
+  box-shadow: 0 8px 20px rgba(30, 58, 95, 0.25) !important;
 }
 
-.stat span {
-  color: var(--ink-500);
-  font-size: 0.85rem;
+.srs-pager__page--active {
+  background: var(--accent-gradient) !important;
+  color: var(--text-on-accent) !important;
 }
-
-.stat strong {
-  font-size: 1.5rem;
-  color: var(--ink-900);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.chart-wrap {
-  min-height: 280px;
-}
-
-.chart-wrap h3 {
-  margin: 0 0 12px;
-  color: var(--ink-700);
-}
-
-.badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: var(--info-bg);
-  color: var(--info);
-}
-
-.badge-warn { background: var(--warn-bg); color: var(--warn); }
-.badge-ok { background: var(--ok-bg); color: var(--ok); }
-.badge-bad { background: var(--bad-bg); color: var(--bad); }
-
-.empty-state {
-  text-align: center;
-  padding: 32px;
-  color: var(--ink-500);
-}
-
-/* Snackbar theming */
-.snack-ok .mdc-snackbar__surface {
-  background: var(--ok) !important;
-  color: #fff !important;
-}
-
-.snack-bad .mdc-snackbar__surface {
-  background: var(--bad) !important;
-  color: #fff !important;
-}
-
-.dark-theme .mat-mdc-form-field,
-.dark-theme .mat-mdc-table {
-  color: var(--ink-900);
-}
-
-.dark-theme .mat-mdc-card {
-  background: var(--surface);
-  color: var(--ink-900);
-}
-
-html[dir='rtl'] .pos-grid { direction: rtl; }

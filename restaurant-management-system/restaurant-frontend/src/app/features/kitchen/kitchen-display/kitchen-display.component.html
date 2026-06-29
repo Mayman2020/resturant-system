@@ -1,51 +1,49 @@
-<app-page-header titleKey="KITCHEN.TITLE" subtitleKey="KITCHEN.POLLING"></app-page-header>
+<div class="app-page kitchen-page">
+  <app-page-header titleKey="KITCHEN.TITLE" subtitleKey="KITCHEN.POLLING">
+    <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
+  </app-page-header>
 
-<div class="kitchen-columns">
-  <section class="column card">
-    <h3>{{ 'KITCHEN.NEW_ORDERS' | translate }}</h3>
-    <p class="empty" *ngIf="!ordersByStatuses(newStatuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
-    <article class="order" *ngFor="let o of ordersByStatuses(newStatuses)">
-      <header>
-        <strong>#{{ o.orderNumber }}</strong>
-        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
-      </header>
-      <p>{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
-      <ul>
-        <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
-      </ul>
-      <button mat-stroked-button color="primary" (click)="advance(o)">{{ 'KITCHEN.ADVANCE' | translate }}</button>
-    </article>
-  </section>
+  <div class="app-list-surface">
+    <section class="list-stats">
+      <article class="stat-pill stat-pill--orange">
+        <span class="stat-label">{{ 'KITCHEN.NEW_ORDERS' | translate }}</span>
+        <strong>{{ newCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--cyan">
+        <span class="stat-label">{{ 'KITCHEN.IN_PROGRESS' | translate }}</span>
+        <strong>{{ progressCount }}</strong>
+      </article>
+      <article class="stat-pill stat-pill--pink">
+        <span class="stat-label">{{ 'KITCHEN.READY_TO_SERVE' | translate }}</span>
+        <strong>{{ readyCount }}</strong>
+      </article>
+    </section>
 
-  <section class="column card">
-    <h3>{{ 'KITCHEN.IN_PROGRESS' | translate }}</h3>
-    <p class="empty" *ngIf="!ordersByStatuses(progressStatuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
-    <article class="order" *ngFor="let o of ordersByStatuses(progressStatuses)">
-      <header>
-        <strong>#{{ o.orderNumber }}</strong>
-        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
-      </header>
-      <p>{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
-      <ul>
-        <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
-      </ul>
-      <button mat-stroked-button color="primary" (click)="advance(o)">{{ 'KITCHEN.ADVANCE' | translate }}</button>
-    </article>
-  </section>
-
-  <section class="column card">
-    <h3>{{ 'KITCHEN.READY_TO_SERVE' | translate }}</h3>
-    <p class="empty" *ngIf="!ordersByStatuses(readyStatuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
-    <article class="order" *ngFor="let o of ordersByStatuses(readyStatuses)">
-      <header>
-        <strong>#{{ o.orderNumber }}</strong>
-        <span class="badge">{{ o.status | enumTranslate:'ORDERS' }}</span>
-      </header>
-      <p>{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
-      <ul>
-        <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
-      </ul>
-      <button mat-stroked-button color="primary" (click)="advance(o)">{{ 'KITCHEN.DONE' | translate }}</button>
-    </article>
-  </section>
+    <div class="kitchen-columns">
+      <section class="app-card column" *ngFor="let col of columns">
+        <div class="app-card-header">
+          <span class="app-card-title">{{ col.titleKey | translate }}</span>
+        </div>
+        <div class="column-body">
+          <p class="empty-state" *ngIf="!ordersByStatuses(col.statuses).length">{{ 'KITCHEN.NO_ORDERS' | translate }}</p>
+          <article class="entity-card order-card" *ngFor="let o of ordersByStatuses(col.statuses)">
+            <div class="entity-card__head">
+              <div class="entity-card__avatar">#{{ o.orderNumber }}</div>
+              <div class="entity-card__meta">
+                <h3 class="entity-card__name">{{ 'ORDERS.ORDER_NUMBER' | translate }} {{ o.orderNumber }}</h3>
+                <p class="entity-card__sub">{{ 'KITCHEN.ELAPSED' | translate }}: {{ elapsedMinutes(o) }} {{ 'KITCHEN.MINUTES' | translate }}</p>
+              </div>
+              <span class="status-badge" [attr.data-status]="o.status">{{ o.status | enumTranslate:'ORDERS' }}</span>
+            </div>
+            <ul class="order-items">
+              <li *ngFor="let item of o.items">{{ item.name }} × {{ item.quantity }}</li>
+            </ul>
+            <div class="entity-card__actions">
+              <rms-icon-btn icon="arrow_forward" [tooltipKey]="col.actionKey" variant="primary" (clicked)="advance(o)"></rms-icon-btn>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
 </div>
