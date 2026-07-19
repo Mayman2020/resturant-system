@@ -69,4 +69,20 @@ export class AuthService {
     const t = this.tokenStorage.getToken();
     if (t && JwtUtils.isExpired(t)) this.tokenStorage.clearAll();
   }
+
+  forgotPassword(username: string): Observable<void> {
+    return this.api.post<ApiResponse<void>>(AppConstants.API.AUTH_FORGOT_PASSWORD, { username }).pipe(
+      map((res) => {
+        if (!res.success) throw new Error(res.message || 'AUTH.RESET_FAILED');
+      })
+    );
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.api.post<ApiResponse<void>>(AppConstants.API.AUTH_RESET_PASSWORD, { token, newPassword }).pipe(
+      map((res) => {
+        if (!res.success) throw new Error(res.message || 'AUTH.RESET_FAILED');
+      })
+    );
+  }
 }

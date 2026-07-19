@@ -46,7 +46,7 @@
 
         <div class="field-row">
           <label class="field-label">{{ 'AUTH.PASSWORD' | translate }}</label>
-          <a class="field-link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+          <a class="field-link" (click)="openForgotPassword()">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
         </div>
         <div class="login-field">
           <span class="material-icons">lock_outline</span>

@@ -51,6 +51,17 @@ user:
   default:
     password: ${USER_DEFAULT_PASSWORD:Dev@Local2026!}
 
+app:
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:http://localhost:[*],http://127.0.0.1:[*]}
+
+restaurant:
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+    from: ${MAIL_FROM:noreply@restaurant.local}
+  password-reset:
+    base-url: ${PASSWORD_RESET_BASE_URL:http://localhost:4501/auth/reset-password}
+
 server:
   port: 8083
   servlet:

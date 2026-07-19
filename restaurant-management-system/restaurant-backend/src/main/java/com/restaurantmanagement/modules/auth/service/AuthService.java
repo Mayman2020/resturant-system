@@ -1,8 +1,13 @@
 package com.restaurantmanagement.modules.auth.service;
 
+import com.restaurantmanagement.modules.auth.dto.ForgotPasswordRequest;
 import com.restaurantmanagement.modules.auth.dto.LoginRequest;
 import com.restaurantmanagement.modules.auth.dto.LoginResponse;
 import com.restaurantmanagement.modules.auth.dto.RefreshTokenRequest;
+import com.restaurantmanagement.modules.auth.dto.ResetPasswordRequest;
+import com.restaurantmanagement.modules.auth.entity.PasswordResetToken;
+import com.restaurantmanagement.modules.auth.repository.PasswordResetTokenRepository;
+import com.restaurantmanagement.shared.mail.PasswordResetDeliveryService;
 import com.restaurantmanagement.modules.permission.service.RolePermissionService;
 import com.restaurantmanagement.modules.users.entity.User;
 import com.restaurantmanagement.modules.users.repository.UserRepository;
@@ -19,12 +24,14 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +44,9 @@ public class AuthService {
     private final RolePermissionService rolePermissionService;
     private final LoginAttemptService loginAttemptService;
     private final TokenBlacklistService tokenBlacklist;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordResetDeliveryService passwordResetDeliveryService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
@@ -85,6 +95,42 @@ public class AuthService {
                 tokenBlacklist.revoke(token, expiry);
             }
         }
+    }
+
+    @Transactional
+    public void forgotPassword(ForgotPasswordRequest request) {
+        String username = request.getUsername() != null ? request.getUsername().trim() : "";
+        if (username.isEmpty()) {
+            return;
+        }
+        userRepository.findByUsernameIgnoreCase(username).ifPresent(user -> {
+            String token = UUID.randomUUID().toString().replace("-", "");
+            passwordResetTokenRepository.save(PasswordResetToken.builder()
+                    .user(user)
+                    .token(token)
+                    .expiresAt(LocalDateTime.now().plusHours(24))
+                    .used(false)
+                    .build());
+            passwordResetDeliveryService.deliver(user, token);
+        });
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(request.getToken())
+                .orElseThrow(() -> AppException.badRequest("Reset token is invalid or already used."));
+        if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw AppException.badRequest("Reset token has expired.");
+        }
+        User user = resetToken.getUser();
+        if (!user.isActive()) {
+            throw AppException.badRequest("This account is inactive.");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setMustChangePassword(false);
+        userRepository.save(user);
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
     }
 
     public LoginResponse refresh(RefreshTokenRequest request) {

@@ -44,6 +44,9 @@
     "ALL": "All",
     "FILTER": "Filter",
     "EXPORT": "Export",
+    "EXPORT_EXCEL": "Export to Excel",
+    "NO_RESULTS": "No results found",
+    "REQUIRED": "Required",
     "PRINT": "Print",
     "BACK": "Back",
     "DETAILS": "Details",
@@ -86,7 +89,27 @@
     "LOGIN_FAILED": "Login failed. Please try again.",
     "LOGOUT": "Logout",
     "WELCOME": "Welcome back",
-    "WELCOME_BACK": "Welcome Back"
+    "WELCOME_BACK": "Welcome Back",
+    "EMAIL": "Email",
+    "FORGOT_PASSWORD_HINT": "Enter your username and we will send reset instructions to your registered email.",
+    "SEND_RESET": "Send reset link",
+    "RESET_SENT": "If an account exists, reset instructions have been sent.",
+    "RESET_FAILED": "Password reset failed"
+  },
+  "AUDIT": {
+    "INFO_TITLE": "Audit Trail",
+    "CREATED_BY": "Created by",
+    "CREATED_AT": "Created at",
+    "MODIFIED_BY": "Modified by",
+    "UPDATED_AT": "Last updated",
+    "APPROVED_BY": "Approved by",
+    "UNKNOWN": "Unknown"
+  },
+  "LOV": {
+    "SELECT_PLACEHOLDER": "Press search to select",
+    "SEARCH_PLACEHOLDER": "Search in list...",
+    "CLEAR": "Clear selection",
+    "OPEN": "Open selector"
   },
   "LOGIN": {
     "BRAND_TITLE": "RESTAURANT",
@@ -133,6 +156,7 @@
     "SYSTEM": "System"
   },
   "TOPBAR": {
+    "TOGGLE_MENU": "Toggle menu",
     "TOGGLE_SIDEBAR": "Toggle sidebar",
     "LANGUAGE": "Language",
     "THEME": "Theme",
@@ -193,6 +217,7 @@
     "TITLE": "Notifications",
     "MARK_ALL_READ": "Mark all as read",
     "UNREAD": "Unread",
+    "READ": "Read",
     "WELCOME_TITLE": "Welcome to RMS",
     "WELCOME_BODY": "Your restaurant management workspace is ready.",
     "KITCHEN_TITLE": "Kitchen update",
@@ -413,7 +438,11 @@
     "NEW": "New User",
     "USERNAME": "Username",
     "FULL_NAME": "Full Name",
-    "ROLE": "Role"
+    "ROLE": "Role",
+    "ACTIVATE": "Activate user",
+    "DEACTIVATE": "Deactivate user",
+    "ACTIVATE_CONFIRM": "Activate this user account?",
+    "DEACTIVATE_CONFIRM": "Deactivate this user account? They will no longer be able to sign in."
   },
   "PERMISSIONS": {
     "TITLE": "Role Permissions",

@@ -20,6 +20,7 @@ public final class UserMapper {
                 .mustChangePassword(user.isMustChangePassword())
                 .lastLogin(user.getLastLogin())
                 .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 }

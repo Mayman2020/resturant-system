@@ -26,3 +26,13 @@
 .sidebar.collapsed .sidebar-logout span:not(.material-icons) {
   display: none;
 }
+.nav-section-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; border: 0; background: transparent; color: var(--gold-400, #d4a853); padding: 12px 10px 5px; font: inherit; font-size: 11px; font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+.nav-section-label::before { content: ''; display: inline-block; width: 12px; height: 2px; margin-inline-end: 6px; background: currentColor; vertical-align: middle; }
+.nav-section-toggle mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.section-hidden { display: none !important; }
+.sidebar-user { margin: 6px 9px 0; padding: 8px; display: flex; align-items: center; gap: 9px; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; background: rgba(255,255,255,.04); }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: #172033; background: linear-gradient(135deg,#d4a853,#f3d88b); flex: 0 0 auto; }
+.user-info { min-width: 0; display: flex; flex-direction: column; color: #fff; }
+.user-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.user-info small { color: #d4a853; font-size: 10px; }
+.sidebar.collapsed .sidebar-user { justify-content: center; padding-inline: 4px; }

@@ -4,9 +4,13 @@
     <rms-icon-btn icon="refresh" tooltipKey="COMMON.REFRESH" (clicked)="load()"></rms-icon-btn>
   </app-page-header>
 
-  <div class="loading-wrap" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
+  <div class="loading-wrap" *ngIf="listLoad.showInitialSpinner"><mat-spinner diameter="40"></mat-spinner></div>
 
-  <div class="app-list-surface" *ngIf="!loading">
+  <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface">
+    <div class="list-refresh-spinner" *ngIf="listLoad.refreshing">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+
     <section class="list-stats">
       <article class="stat-pill stat-pill--purple">
         <span class="stat-label">{{ 'COMMON.ALL' | translate }}</span>
@@ -19,6 +23,14 @@
     </section>
 
     <section class="app-card table-card notifications-card">
+      <app-table-export-toolbar
+        permissionKey="dashboard"
+        fileName="notifications"
+        [title]="'NOTIFICATIONS.TITLE' | translate"
+        [columns]="exportColumns"
+        [rows]="rows"
+        [loadRows]="loadAllRows">
+      </app-table-export-toolbar>
       <div class="notif-row" *ngFor="let n of rows" [class.is-unread]="!n.read" (click)="onClick(n)">
         <div class="notif-title">{{ text(n.titleKey, n) }}</div>
         <div class="notif-body">{{ text(n.bodyKey, n) }}</div>

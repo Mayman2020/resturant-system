@@ -5,9 +5,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { RmsIconBtnComponent } from '../../../shared/components/rms-icon-btn/rms-icon-btn.component';
 import { TablePagerComponent } from '../../../shared/components/table-pager/table-pager.component';
+import { TableExportToolbarComponent } from '../../../shared/components/table-export-toolbar/table-export-toolbar.component';
+import { ListLoadController } from '../../../shared/utils/list-load.util';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationItem } from '../../../core/models/notification.model';
 import { RmsDatePipe } from '../../../shared/pipes/rms-date.pipe';
@@ -16,12 +19,15 @@ import { I18nService } from '../../../core/i18n/i18n.service';
 @Component({
   selector: 'app-notifications-page',
   standalone: true,
-  imports: [NgFor, NgIf, RmsDatePipe, TranslateModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, PageHeaderComponent, RmsIconBtnComponent, TablePagerComponent],
+  imports: [
+    NgFor, NgIf, RmsDatePipe, TranslateModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule,
+    PageHeaderComponent, RmsIconBtnComponent, TablePagerComponent, TableExportToolbarComponent
+  ],
   templateUrl: './notifications-page.component.html',
   styleUrl: './notifications-page.component.scss'
 })
 export class NotificationsPageComponent implements OnInit {
-  loading = false;
+  listLoad = new ListLoadController();
   page = 0;
   size = 10;
   total = 0;
@@ -36,14 +42,14 @@ export class NotificationsPageComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.loading = true;
+    this.listLoad.begin();
     this.svc.list(this.page, this.size).subscribe({
       next: (r) => {
         this.rows = r.data?.content ?? [];
         this.total = r.data?.totalElements ?? 0;
-        this.loading = false;
+        this.listLoad.end();
       },
-      error: () => { this.loading = false; }
+      error: () => { this.listLoad.end(); }
     });
   }
 
@@ -75,4 +81,15 @@ export class NotificationsPageComponent implements OnInit {
     this.page = index;
     this.load();
   }
+
+  get exportColumns() {
+    return [
+      { header: this.i18n.instant('NOTIFICATIONS.TITLE'), value: (row: NotificationItem) => this.text(row.titleKey, row) },
+      { header: this.i18n.instant('COMMON.DATE'), value: (row: NotificationItem) => row.createdAt ?? '-' },
+      { header: this.i18n.instant('COMMON.STATUS'), value: (row: NotificationItem) => this.i18n.instant(row.read ? 'NOTIFICATIONS.READ' : 'NOTIFICATIONS.UNREAD') }
+    ];
+  }
+
+  loadAllRows = (): Promise<NotificationItem[]> =>
+    firstValueFrom(this.svc.list(0, Math.max(this.total, 500))).then((r) => r.data?.content ?? []);
 }

@@ -5,6 +5,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { PermissionService } from '../../../core/services/permission.service';
@@ -12,6 +13,7 @@ import { SnackService } from '../../../core/services/snack.service';
 import { I18nService, LangCode } from '../../../core/i18n/i18n.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { switchMap } from 'rxjs';
+import { ForgotPasswordDialogComponent } from '../forgot-password-dialog/forgot-password-dialog.component';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +34,7 @@ export class LoginComponent {
     private readonly perms: PermissionService,
     private readonly router: Router,
     private readonly snack: SnackService,
+    private readonly dialog: MatDialog,
     readonly i18n: I18nService,
     readonly theme: ThemeService
   ) {
@@ -56,6 +59,10 @@ export class LoginComponent {
 
   setLang(code: LangCode): void {
     this.i18n.setLang(code).subscribe();
+  }
+
+  openForgotPassword(): void {
+    this.dialog.open(ForgotPasswordDialogComponent, { width: '420px' });
   }
 
   submit(): void {

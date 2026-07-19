@@ -89,6 +89,7 @@ public class LookupService {
         return LookupResponseDTO.builder()
             .id(l.getId()).type(l.getType()).code(l.getCode())
             .nameAr(l.getNameAr()).nameEn(l.getNameEn()).parentId(l.getParentId())
-            .sortOrder(l.getSortOrder()).active(l.isActive()).locked(l.isLocked()).build();
+            .sortOrder(l.getSortOrder()).active(l.isActive()).locked(l.isLocked())
+            .createdAt(l.getCreatedAt()).updatedAt(l.getUpdatedAt()).build();
     }
 }

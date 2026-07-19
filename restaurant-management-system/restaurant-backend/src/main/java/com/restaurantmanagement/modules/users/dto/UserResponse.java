@@ -19,4 +19,5 @@ public class UserResponse {
     private boolean mustChangePassword;
     private LocalDateTime lastLogin;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

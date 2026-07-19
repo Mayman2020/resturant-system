@@ -21,6 +21,8 @@ export interface LookupItem {
   sortOrder: number;
   active: boolean;
   locked: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CreateLookupRequest {

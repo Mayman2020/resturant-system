@@ -1,8 +1,10 @@
 package com.restaurantmanagement.modules.auth.controller;
 
+import com.restaurantmanagement.modules.auth.dto.ForgotPasswordRequest;
 import com.restaurantmanagement.modules.auth.dto.LoginRequest;
 import com.restaurantmanagement.modules.auth.dto.LoginResponse;
 import com.restaurantmanagement.modules.auth.dto.RefreshTokenRequest;
+import com.restaurantmanagement.modules.auth.dto.ResetPasswordRequest;
 import com.restaurantmanagement.modules.auth.service.AuthService;
 import com.restaurantmanagement.shared.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,5 +36,17 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
         authService.logout(request.getHeader("Authorization"));
         return ResponseEntity.ok(ApiResponse.ok(null));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok(ApiResponse.ok("If the username exists, reset instructions were sent.", null));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok(ApiResponse.ok("Password updated successfully.", null));
     }
 }

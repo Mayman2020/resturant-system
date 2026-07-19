@@ -4,6 +4,8 @@ import com.restaurantmanagement.modules.lookup.entity.LookupType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data @Builder
 public class LookupResponseDTO {
     private Long id;
@@ -15,4 +17,6 @@ public class LookupResponseDTO {
     private Integer sortOrder;
     private boolean active;
     private boolean locked;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

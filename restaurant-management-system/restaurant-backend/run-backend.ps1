@@ -154,7 +154,7 @@ function Resolve-BackendPort {
     if ($RequestedPort -gt 0) {
         return $RequestedPort
     }
-    # This machine often has Oracle TNS on 8082; prefer 8082 when 8082 is not Java.
+    # Prefer 8083 when the default port is occupied by a non-Java process.
     $defaultState = Get-ProcessOnPort -Port $DefaultPort
     if ($defaultState -and ($defaultState.Process.ProcessName -notlike "*$ExpectedProcess*")) {
         $preferredState = Get-ProcessOnPort -Port $PreferredDevPort
@@ -216,15 +216,19 @@ if (-not $SkipBuild) {
     Write-Info "Skipping build (-SkipBuild)."
 }
 
-if ($Profile) {
-    $env:SPRING_PROFILES_ACTIVE = $Profile
-    Write-Step "Starting backend (profile: $Profile)..." "Cyan"
-} else {
-    if (Test-Path Env:SPRING_PROFILES_ACTIVE) { Remove-Item Env:SPRING_PROFILES_ACTIVE }
-    Write-Step "Starting backend (default profile)..." "Cyan"
+# Local launches need `dev` so CORS + mail defaults apply after Wave B hardening.
+$ActiveProfile = if ($Profile) { $Profile } else { "dev" }
+$env:SPRING_PROFILES_ACTIVE = $ActiveProfile
+if (-not $env:CORS_ALLOWED_ORIGINS -and $ActiveProfile -eq "dev") {
+    $env:CORS_ALLOWED_ORIGINS = "http://localhost:[*],http://127.0.0.1:[*]"
 }
+if (-not $env:JWT_SECRET) {
+    $env:JWT_SECRET = "RestaurantDevOnlyLocalJWTSecretMin32Chars!"
+}
+Write-Step "Starting backend (profile: $ActiveProfile)..." "Cyan"
 $BaseUrl = "http://localhost:$SelectedPort$ContextPath"
 Write-Info "  Server: $BaseUrl"
+Write-Info "  Profile: $ActiveProfile"
 Write-Info "  DB URL default: jdbc:postgresql://localhost:5432/postgres?currentSchema=restaurant_mgmt"
 Write-Info "  Stop with Ctrl+C"
 Write-Host ""
@@ -251,7 +255,7 @@ window.__RMS_FILE_URL__ = '$BaseUrl/files';
 }
 
 $runArgs = @("spring-boot:run")
-if ($Profile) { $runArgs += "-Dspring-boot.run.profiles=$Profile" }
+$runArgs += "-Dspring-boot.run.profiles=$ActiveProfile"
 $runArgs += "-Dspring-boot.run.arguments=--server.port=$SelectedPort --file.base-url=http://localhost:$SelectedPort"
 
 & $MvnwPath @runArgs

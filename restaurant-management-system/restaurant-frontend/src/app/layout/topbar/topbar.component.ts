@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -25,12 +25,13 @@ import { Branch } from '../../core/models/restaurant.model';
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
 })
-export class TopbarComponent implements OnInit {
+export class TopbarComponent implements OnInit, OnDestroy {
   @Output() toggleSidebar = new EventEmitter<void>();
   branches: Branch[] = [];
   selectedBranchId = 1;
   unreadCount = 0;
   searchQuery = '';
+  private pollTimer?: ReturnType<typeof setInterval>;
 
   constructor(
     readonly i18n: I18nService,
@@ -49,6 +50,11 @@ export class TopbarComponent implements OnInit {
       error: () => { this.branches = []; }
     });
     this.refreshUnread();
+    this.pollTimer = setInterval(() => this.refreshUnread(), 45000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollTimer) clearInterval(this.pollTimer);
   }
 
   get initials(): string {

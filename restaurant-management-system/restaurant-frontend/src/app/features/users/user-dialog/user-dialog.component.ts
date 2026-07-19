@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuditTrailComponent } from '../../../shared/components/audit-trail/audit-trail.component';
 import { UserService } from '../../../core/services/user.service';
 import { BranchContextService } from '../../../core/services/branch-context.service';
 import { USER_ROLE_VALUES, StaffMember, UserRole } from '../../../core/models/user.model';
@@ -17,7 +18,7 @@ import { SnackService } from '../../../core/services/snack.service';
   standalone: true,
   imports: [
     NgFor, NgIf, ReactiveFormsModule, MatDialogModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatSelectModule, TranslateModule
+    MatInputModule, MatButtonModule, MatSelectModule, TranslateModule, AuditTrailComponent
   ],
   template: `
     <h2 mat-dialog-title>{{ (data?.id ? 'COMMON.EDIT' : 'USERS.NEW') | translate }}</h2>
@@ -45,6 +46,11 @@ import { SnackService } from '../../../core/services/snack.service';
             <mat-option *ngFor="let r of roles" [value]="r">{{ ('ROLE.' + r) | translate }}</mat-option>
           </mat-select>
         </mat-form-field>
+        <app-audit-trail
+          *ngIf="data?.id"
+          [createdAt]="data?.createdAt"
+          [updatedAt]="data?.updatedAt">
+        </app-audit-trail>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
         <button mat-button type="button" mat-dialog-close>{{ 'COMMON.CANCEL' | translate }}</button>

@@ -8,6 +8,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_DIALOG_IMPORTS } from '../../../shared/dialog-ui';
+import { AuditTrailComponent } from '../../../shared/components/audit-trail/audit-trail.component';
 import { LookupItem, LookupService, LookupType } from '../../../core/services/lookup.service';
 import { SnackService } from '../../../core/services/snack.service';
 
@@ -20,7 +21,7 @@ export interface LookupDialogData {
   selector: 'app-lookup-dialog', standalone: true,
   imports: [
     NgIf, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule,
-    MatCheckboxModule, TranslateModule, ...APP_DIALOG_IMPORTS
+    MatCheckboxModule, TranslateModule, AuditTrailComponent, ...APP_DIALOG_IMPORTS
   ],
   template: `
     <h2 mat-dialog-title>
@@ -47,6 +48,11 @@ export interface LookupDialogData {
             <input matInput formControlName="nameEn" />
           </mat-form-field>
           <mat-checkbox *ngIf="data.item" formControlName="active" class="full">{{ 'LOOKUPS.ACTIVE' | translate }}</mat-checkbox>
+          <app-audit-trail
+            *ngIf="data.item"
+            [createdAt]="data.item.createdAt"
+            [updatedAt]="data.item.updatedAt">
+          </app-audit-trail>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions align="end" class="app-dialog-actions">

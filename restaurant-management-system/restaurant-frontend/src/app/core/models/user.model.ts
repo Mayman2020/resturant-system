@@ -1,6 +1,6 @@
 export type UserRole = 'ADMIN' | 'MANAGER' | 'CASHIER' | 'WAITER' | 'KITCHEN_STAFF' | 'DELIVERY_DRIVER';
 export const USER_ROLE_VALUES: UserRole[] = ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN_STAFF', 'DELIVERY_DRIVER'];
-export type PermissionAction = 'view' | 'create' | 'edit' | 'delete' | 'menu';
+export type PermissionAction = 'view' | 'create' | 'edit' | 'delete' | 'menu' | 'export';
 export interface ModulePermission {
   enabled?: boolean;
   view?: boolean;
@@ -8,6 +8,7 @@ export interface ModulePermission {
   edit?: boolean;
   delete?: boolean;
   menu?: boolean;
+  export?: boolean;
 }
 
 export type PermissionMap = Record<string, ModulePermission>;
@@ -28,6 +29,7 @@ export interface StaffMember extends UserDto {
   active?: boolean;
   lastLogin?: string;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CurrentUser extends UserDto {
